@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Author Dashboard | Academia Institute</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Playfair+Display:wght@600;700&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#b97958",
+                        "surface-container-high": "#dce9ff",
+                        "on-tertiary-fixed-variant": "#6c391d",
+                        "surface": "#f8f9ff",
+                        "inverse-surface": "#213145",
+                        "surface-variant": "#d3e4fe",
+                        "surface-bright": "#f8f9ff",
+                        "surface-container": "#e5eeff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#001b3d",
+                        "error": "#ba1a1a",
+                        "primary-container": "#002147",
+                        "on-secondary-fixed-variant": "#2a486e",
+                        "tertiary-container": "#3d1500",
+                        "primary-fixed": "#d6e3ff",
+                        "secondary-fixed": "#d3e3ff",
+                        "outline": "#74777f",
+                        "tertiary": "#180500",
+                        "secondary": "#426087",
+                        "on-primary": "#ffffff",
+                        "surface-tint": "#465f88",
+                        "secondary-fixed-dim": "#abc8f5",
+                        "on-surface-variant": "#44474e",
+                        "on-primary-container": "#708ab5",
+                        "on-error-container": "#93000a",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#3c5980",
+                        "surface-container-highest": "#d3e4fe",
+                        "inverse-on-surface": "#eaf1ff",
+                        "tertiary-fixed": "#ffdbcb",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#aec7f6",
+                        "background": "#f8f9ff",
+                        "on-primary-fixed-variant": "#2d476f",
+                        "on-error": "#ffffff",
+                        "on-background": "#0b1c30",
+                        "surface-container-low": "#eff4ff",
+                        "tertiary-fixed-dim": "#ffb691",
+                        "inverse-primary": "#aec7f6",
+                        "surface-dim": "#cbdbf5",
+                        "on-secondary-fixed": "#001c39",
+                        "on-tertiary-fixed": "#341100",
+                        "primary": "#000a1e",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#c4c6cf",
+                        "on-surface": "#0b1c30",
+                        "secondary-container": "#b3d1fe"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "stack-xl": "64px",
+                        "stack-md": "16px",
+                        "stack-lg": "32px",
+                        "margin-desktop": "64px",
+                        "container-max": "1200px",
+                        "gutter": "24px",
+                        "stack-sm": "8px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "code-sm": ["JetBrains Mono"],
+                        "body-sm": ["Inter"],
+                        "headline-md": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "body-md": ["Inter"],
+                        "display-lg-mobile": ["Playfair Display"],
+                        "title-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "code-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-sm": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                        "headline-md": ["30px", {"lineHeight": "38px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+                        "display-lg-mobile": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { background-color: #fbfbfc; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .paper-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            transition: border-color 0.2s ease;
+        }
+        .paper-card:hover {
+            border-color: #426087;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d3e4fe; border-radius: 10px; }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+
+
+<!-- TopNavBar -->
+<header class="bg-surface border-b border-outline-variant h-20 fixed top-0 left-0 w-full z-50">
+<div class="flex justify-between items-center w-full px-margin-desktop max-w-container-max mx-auto h-full">
+<div class="text-title-lg font-title-lg font-bold text-primary">Academia Institute</div>
+<nav class="hidden md:flex items-center gap-stack-lg">
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="about.html">About</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="journals.html">Journals</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="publish.php">Publish</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="authors.html" >Authors</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="reviewers.html">Reviewers</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="archive.php">Archive</a>
+</nav>
+<div class="flex items-center gap-stack-md">
+<a href="archive.php" class="material-symbols-outlined text-primary">
+    search
+</a><a href="dashboard.html" class="flex items-center gap-stack-sm cursor-pointer border-l border-outline-variant pl-stack-md">
+    <span class="material-symbols-outlined text-primary text-3xl">
+        account_circle
+    </span>
+    <span class="hidden lg:block text-label-caps font-label-caps">
+        ******* Your name 
+    </span>
+</a>
+</div>
+</div>
+</header>
+
+
+<!-- SideNavBar -->
+<aside class="bg-surface-container-low border-r border-outline-variant h-screen w-64 fixed left-0 top-0 pt-24 hidden md:flex flex-col gap-stack-md py-stack-lg">
+<div class="px-6 mb-stack-md">
+<h2 class="text-title-lg font-title-lg font-bold text-primary">Personal Cabinet</h2>
+<p class="text-body-sm font-body-sm text-secondary opacity-80">Author ID:*******</p>
+</div>
+<nav class="flex flex-col">
+<a href="dashboard.php" class="flex items-center gap-4 py-3 text-primary font-bold border-l-4 border-primary pl-4 scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-label-caps font-label-caps">Overview</span>
+</a><a href="my-submissions.php" class="flex items-center gap-4 py-3 text-on-secondary-container px-4 hover:bg-surface-variant transition-all duration-150">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+<span class="text-label-caps font-label-caps">My Submissions</span>
+</a>
+<a href="reviewers.html" class="flex items-center gap-4 py-3 text-on-secondary-container px-4 hover:bg-surface-variant transition-all duration-150">
+<span class="material-symbols-outlined" data-icon="reviews">reviews</span>
+<span class="text-label-caps font-label-caps">Peer Reviews</span>
+</a><a href="billing.php" class="flex items-center gap-4 py-3 text-on-secondary-container px-4 hover:bg-surface-variant transition-all duration-150">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="text-label-caps font-label-caps">Billing</span>
+</a><a href="account-settings.php" class="flex items-center gap-4 py-3 text-on-secondary-container px-4 hover:bg-surface-variant transition-all duration-150">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-label-caps font-label-caps">Account Settings</span>
+</nav>
+</aside>
+
+<main class="md:ml-64 pt-24">
+<!-- Journal Grid -->
+<section class="bg-surface-container-low py-stack-xl">
+
+<div class="px-margin-desktop max-w-container-max mx-auto">
+
+<div class="flex justify-between items-end mb-stack-lg">
+
+<div>
+<span class="text-label-caps font-label-caps text-secondary block mb-2">
+OUR PUBLICATIONS
+</span>
+
+<h2 class="font-headline-md text-headline-md text-primary">
+The Core Collections
+</h2>
+
+</div>
+
+
+<a href="journals.html"
+class="text-label-caps font-label-caps text-primary hover:underline flex items-center gap-1">
+
+VIEW ALL JOURNALS
+
+<span class="material-symbols-outlined text-sm">
+arrow_forward
+</span>
+
+</a>
+
+</div>
+
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+
+
+<!-- CARD TEMPLATE -->
+
+<!-- Engineering -->
+<div class="relative bg-surface border border-outline-variant hover:border-secondary transition-all flex flex-col">
+
+
+<a href="engineering.php"
+class="aspect-[3/4] bg-surface-variant overflow-hidden block">
+
+<img
+class="w-full h-full object-cover"
+src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQSYi-ACI-HwCff_5X81iH5_KqV4H7jvkUo2-WEnUJD0s-cDUikCnvYj4ImDCSLsnN3B8XL9jvwMtgSv3TuxMdDicPLrenUjT7iYQX_y2HELDZwntPoP5mkrLY88rkffnzChc9Meik15Igo4T77PSdYfIsaMlUIHkeLg5RLGcchwOMxdUaxOSFK9efy4tZZAklLsWWSHnoDTxEZpttQyGh_mqtMNn3Gt1A2gsxP8_ehIBo2hunnOg"
+alt="Engineering Journal">
+
+</a>
+
+
+<div class="absolute top-3 right-3 bg-primary text-on-primary px-2 py-1 font-code-sm">
+IF: 5.8
+</div>
+
+
+<div class="p-stack-md">
+
+<h3 class="font-title-lg text-title-lg text-primary mb-1">
+Engineering
+</h3>
+
+
+<p class="font-code-sm text-code-sm text-on-surface-variant mb-4">
+ISSN: 1045-8824
+</p>
+
+
+<a href="engineering.php"
+class="block text-label-caps font-label-caps text-secondary border-t border-outline-variant pt-2 hover:text-primary">
+
+SUBMIT NOW
+
+</a>
+
+
+</div>
+
+</div>
+
+
+
+
+
+<!-- AI -->
+
+<div class="relative bg-surface border border-outline-variant hover:border-secondary transition-all flex flex-col">
+
+
+<a href="ai.php"
+class="aspect-[3/4] bg-surface-variant overflow-hidden block">
+
+<img
+class="w-full h-full object-cover"
+src="https://lh3.googleusercontent.com/aida-public/AB6AXuAA6A7wkvLgG4XWAGstqJxk3pPcqf1ciXCgL9kV-4MG3yzIZmpnz9ZNTw9owOE1It28V4PfjiQBYPdg0tLgqh0j54Fdpxyr6K20bA3wTGcc9XJm4XohmxMxxftteCdtr0L2uOX5nUdykl5KovReaSDhvbFGG5aUo-OzjyB7NePHcUQcvGdGAPeOurQzz-WDgP-tQm8G3af3AJuUs4mZZ8ojPpzrp6EqITl_nKsth0Lhxm7tzPirbQc"
+alt="AI Journal">
+
+</a>
+
+
+<div class="absolute top-3 right-3 bg-primary text-on-primary px-2 py-1 font-code-sm">
+IF: 7.2
+</div>
+
+
+<div class="p-stack-md">
+
+<h3 class="font-title-lg text-title-lg text-primary mb-1">
+AI & Robotics
+</h3>
+
+
+<p class="font-code-sm text-code-sm text-on-surface-variant mb-4">
+ISSN: 2190-3321
+</p>
+
+
+<a href="ai.php"
+class="block text-label-caps font-label-caps text-secondary border-t border-outline-variant pt-2 hover:text-primary">
+
+SUBMIT NOW
+
+</a>
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+<!-- Medicine -->
+
+
+<div class="relative bg-surface border border-outline-variant hover:border-secondary transition-all flex flex-col">
+
+
+<a href="medicine.php"
+class="aspect-[3/4] bg-surface-variant overflow-hidden block">
+
+
+<img
+class="w-full h-full object-cover"
+src="https://lh3.googleusercontent.com/aida-public/AB6AXuApKet2IO_wOnj5bWcpyKkzyAWgJZsbPQqzUx-lfO0n_PUfmjtnGPvnmHUTRMUdlaZgCD6EFKneDkTXEqUBVcoGy9gT5Nj_bk33n6X-IcSbPphZa6aBRrhVhmEm6ZK56uxJGpsMQKQ1OebF_hsRrDCTrjnqBkLc0-vGA6TfZSYGjS2KcBS5xhMmGbWv8B7e7GCC0Jzog6FJkkB_e1CYITq0rm3w_Z289cDJHM8igpsOUuH9NwvH_tI"
+alt="Medicine Journal">
+
+</a>
+
+
+<div class="absolute top-3 right-3 bg-primary text-on-primary px-2 py-1 font-code-sm">
+
+IF: 12.4
+
+</div>
+
+
+<div class="p-stack-md">
+
+
+<h3 class="font-title-lg text-title-lg text-primary mb-1">
+
+Medicine
+
+</h3>
+
+
+<p class="font-code-sm text-code-sm text-on-surface-variant mb-4">
+
+ISSN: 0028-4793
+
+</p>
+
+
+<a href="medicine.php"
+class="block text-label-caps font-label-caps text-secondary border-t border-outline-variant pt-2 hover:text-primary">
+
+SUBMIT NOW
+
+</a>
+
+
+</div>
+
+</div>
+
+
+
+
+
+<!-- Architecture -->
+<div class="relative bg-surface border border-outline-variant hover:border-secondary transition-all flex flex-col">
+
+    <a href="architecture.php" class="aspect-[3/4] bg-surface-variant overflow-hidden block">
+        <img
+            class="w-full h-full object-cover"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbJ3dcLsM5B1mj1QjGOkMfSsVBLwCtZ3PAKU7p08xkpmj9ikcgyf0aKJAsSZ02RXmIiWuAupDTnvmuXtkGErNqYPOw-wdCrlMlRDZHZZVyD0_ehMPm9jn2nIOR9pocSVGsS_XbNUzKmt7-cBFR4A4D7qGEgV0crrUuVZ-udQAjbaxfy_iZyIfmQlSQ0eITbNl86LVSOCpEuTratYLFvFRzdHAWRq-FaDlV6eJmv2PdubxsKHZjWcE"
+            alt="Architecture Journal">
+    </a>
+
+    <div class="absolute top-3 right-3 bg-primary text-on-primary px-2 py-1 font-code-sm">
+        IF: 3.1
+    </div>
+
+    <div class="p-stack-md">
+        <h3 class="font-title-lg text-title-lg text-primary mb-1">
+            Architecture
+        </h3>
+
+        <p class="font-code-sm text-code-sm text-on-surface-variant mb-4">
+            ISSN: 1341-7029
+        </p>
+
+        <a href="architecture.html"
+           class="block text-label-caps font-label-caps text-secondary border-t border-outline-variant pt-2 hover:text-primary">
+            SUBMIT NOW
+        </a>
+    </div>
+</div>
+
+<!-- Economics -->
+<div class="relative bg-surface border border-outline-variant hover:border-secondary transition-all group flex flex-col h-full">
+
+    <a href="economics.php" class="aspect-[3/4] bg-surface-variant overflow-hidden block">
+        <img class="w-full h-full object-cover"
+             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnF8MVfIg90k-bVy56e6iK_64HmsPNE7kZukQYCQMB5dh0yvaJTEGiqjjYuMP0vWA5esrbp14ki8C0uc1iqm-CX1QYrXk53pLXqXH7t_xEC1lhSl875w7HIstDUzUsZdn7QWXB2TM1571rheZvVkssP8uDti9FppjtGAdkd1haSlJnKvFhS122QFlNCN5K2_miZezHBu5As8mEkuuoJCnZxHTNwl4gu0CjL0gBya0vW6K5LRSGnCA"
+             alt="Economics Journal">
+    </a>
+
+    <div class="absolute top-3 right-3 bg-primary text-on-primary px-2 py-1 font-code-sm">
+        IF: 4.5
+    </div>
+
+    <div class="p-stack-md flex-grow">
+        <h3 class="font-title-lg text-title-lg text-primary mb-1">Economics</h3>
+        <p class="font-code-sm text-code-sm text-on-surface-variant mb-4">ISSN: 0034-6535</p>
+
+        <a href="economics.php"
+           class="block text-label-caps font-label-caps text-secondary border-t border-outline-variant pt-2 hover:text-primary">
+            SUBMIT NOW
+        </a>
+    </div>
+</div>
+
+<!-- Education -->
+<div class="relative bg-surface border border-outline-variant hover:border-secondary transition-all group flex flex-col h-full">
+
+    <a href="education.php" class="aspect-[3/4] bg-surface-variant overflow-hidden block">
+        <img class="w-full h-full object-cover"
+             src="https://lh3.googleusercontent.com/aida-public/AB6AXuBk8g3B2cXU1bTkKICSZpG59QAY36fJj8lLHPD_GJSvlREotYAdWMSZ8o36AuA6JvvvxFYMDMeMBXI8_r_v4nFQe0VzxHZnF7XghQg43QGU7BHETTaJP7B8LwQMQ6L5XV3uMnbktMrDosPu1aueuvQ1EOj3Q5KM4rCEJr4xXw2CdlcQ0pIiaK0fm3r7TZ-afFMkAXVHjb9HjYGcWn0biUsYSV7f9n7r1mUm1L_I_AfaOPpCfp6iD18"
+             alt="Education Journal">
+    </a>
+
+    <div class="absolute top-3 right-3 bg-primary text-on-primary px-2 py-1 font-code-sm">
+        IF: 2.9
+    </div>
+
+    <div class="p-stack-md flex-grow">
+        <h3 class="font-title-lg text-title-lg text-primary mb-1">Education</h3>
+        <p class="font-code-sm text-code-sm text-on-surface-variant mb-4">ISSN: 0013-189X</p>
+
+        <a href="education.php"
+           class="block text-label-caps font-label-caps text-secondary border-t border-outline-variant pt-2 hover:text-primary">
+            SUBMIT NOW
+        </a>
+    </div>
+</div>
+
+<!-- Environment -->
+<div class="relative bg-surface border border-outline-variant hover:border-secondary transition-all group flex flex-col h-full">
+
+    <a href="environment.php" class="aspect-[3/4] bg-surface-variant overflow-hidden block">
+        <img class="w-full h-full object-cover"
+             src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj1aB6yAclM_ZYfSxdLrwl4IhCxOmh-kkgWObS4ynyGBdtS3UfpOq-gHCMubzqdcK61JbuIJm1WPEgPunpWF8bekyGxNFEi9pqSmjlis_xJIs1KYvESLd7TZFld4x3Amdc__2PyYV0IhZSsRgztCw493VHBSGXl7QTHCIYck4L5x0NhU1Tzx-DlPcQNfEz08GBdRVaM0sc6Nkj_Fy-Pr8RqvCndltmRBuiEWNkSALGGZCptdpPwBM"
+             alt="Environment Journal">
+    </a>
+
+    <div class="absolute top-3 right-3 bg-primary text-on-primary px-2 py-1 font-code-sm">
+        IF: 6.7
+    </div>
+
+    <div class="p-stack-md flex-grow">
+        <h3 class="font-title-lg text-title-lg text-primary mb-1">Environment</h3>
+        <p class="font-code-sm text-code-sm text-on-surface-variant mb-4">ISSN: 1462-9011</p>
+
+        <a href="environment.php"
+           class="block text-label-caps font-label-caps text-secondary border-t border-outline-variant pt-2 hover:text-primary">
+            SUBMIT NOW
+        </a>
+    </div>
+</div>
+
+<!-- Energy -->
+<div class="relative bg-surface border border-outline-variant hover:border-secondary transition-all group flex flex-col h-full">
+
+    <a href="energy.php" class="aspect-[3/4] bg-surface-variant overflow-hidden block">
+        <img class="w-full h-full object-cover"
+             src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8ROomWHvjBedPr7_Z2saSL6RcTI-CjSuD3jxuyCj73omHr639h1Xs472FQoNGlM2zL7hIhyAZkVZdw_njygsNVCfJsr0JXQAk2MVSbf-vJWII9NdH9s4_7wF5crPue6e-G6kQxUmrNQrCIShNH3BV6oZAUSa-rmilPJhQmqAMVSxImXmahw0Bv4VpWQzVhLVGkOf8dz0cbbb4Q99LCEq9LlBXhUmdgsHDCYxt-X-6Cb0agM5v9PQ"
+             alt="Energy Journal">
+    </a>
+
+    <div class="absolute top-3 right-3 bg-primary text-on-primary px-2 py-1 font-code-sm">
+        IF: 8.1
+    </div>
+
+    <div class="p-stack-md flex-grow">
+        <h3 class="font-title-lg text-title-lg text-primary mb-1">Energy</h3>
+        <p class="font-code-sm text-code-sm text-on-surface-variant mb-4">ISSN: 0301-4215</p>
+
+        <a href="energy.php"
+           class="block text-label-caps font-label-caps text-secondary border-t border-outline-variant pt-2 hover:text-primary">
+            SUBMIT NOW
+        </a>
+    </div>
+</div>
+
+</div> <!-- grid -->
+</div> <!-- container -->
+</section>
+
+<!-- Editorial Board Section -->
+<section class="mb-stack-xl" id="editorial">
+<h2 class="text-headline-md font-headline-md text-primary mb-stack-md">Editorial Board</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<div class="flex items-center gap-4 p-4 border border-transparent hover:border-outline-variant transition-colors">
+<div class="w-16 h-16 rounded-full overflow-hidden bg-surface-variant">
+</div>
+<div>
+<h4 class="text-title-lg font-title-lg">Aset Aiganym </h4>
+<p class="text-body-sm font-body-sm italic text-on-surface-variant">Editor-in-Chief, NIS </p>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 border border-transparent hover:border-outline-variant transition-colors">
+<div class="w-16 h-16 rounded-full overflow-hidden bg-surface-variant">
+    <a href="https://photos.google.com/photo/AF1QipM2HDh2JSOoW149vJdh4HpKjxADC1P7hS4QzUcw" target="_blank">
+        <img
+            class="w-full h-full object-cover"
+            src="https://photos.google.com/photo/AF1QipM2HDh2JSOoW149vJdh4HpKjxADC1P7hS4QzUcw"
+            alt="Gulshat Sarsenova">
+    </a>
+</div>
+<div>
+<h4 class="text-title-lg font-title-lg">Dr.Sarsenova Gulshat</h4>
+<p class="text-body-sm font-body-sm italic text-on-surface-variant">Associate Editor, Science Research Univercity SRI </p>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 border border-transparent hover:border-outline-variant transition-colors">
+<div class="w-16 h-16 rounded-full overflow-hidden bg-surface-variant">
+</div>
+<div>
+<h4 class="text-title-lg font-title-lg">Aset Aigerym </h4>
+<p class="text-body-sm font-body-sm italic text-on-surface-variant"> Assistent , NIS </p>
+</div>
+</div>
+
+</div>
+</div>
+</section>
+<!-- Indexing Section -->
+<section class="mb-stack-xl pt-stack-lg border-t border-outline-variant">
+    <h2 class="text-label-caps font-label-caps text-on-surface-variant text-center mb-stack-lg">
+        INDEXED AND ABSTRACTED IN
+    </h2>
+
+    <div class="flex flex-wrap justify-center items-center gap-stack-xl grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all">
+
+        <a href="https://www.scopus.com/" target="_blank" rel="noopener noreferrer">
+            <div class="h-8 w-24 bg-on-surface-variant/20 rounded flex items-center justify-center font-bold text-sm hover:bg-on-surface-variant/30 transition">
+                Scopus
+            </div>
+        </a>
+
+        <a href="https://www.webofscience.com/" target="_blank" rel="noopener noreferrer">
+            <div class="h-8 w-32 bg-on-surface-variant/20 rounded flex items-center justify-center font-bold text-sm hover:bg-on-surface-variant/30 transition">
+                Web of Science
+            </div>
+        </a>
+
+        <a href="https://pubmed.ncbi.nlm.nih.gov/" target="_blank" rel="noopener noreferrer">
+            <div class="h-8 w-20 bg-on-surface-variant/20 rounded flex items-center justify-center font-bold text-sm hover:bg-on-surface-variant/30 transition">
+                PubMed
+            </div>
+        </a>
+
+        <a href="https://www.crossref.org/" target="_blank" rel="noopener noreferrer">
+            <div class="h-8 w-28 bg-on-surface-variant/20 rounded flex items-center justify-center font-bold text-sm hover:bg-on-surface-variant/30 transition">
+                CrossRef
+            </div>
+        </a>
+
+        <a href="https://scholar.google.com/" target="_blank" rel="noopener noreferrer">
+            <div class="h-8 w-24 bg-on-surface-variant/20 rounded flex items-center justify-center font-bold text-sm hover:bg-on-surface-variant/30 transition">
+                Google Scholar
+            </div>
+        </a>
+
+        <a href="https://ui.adsabs.harvard.edu/" target="_blank" rel="noopener noreferrer">
+            <div class="h-8 w-28 bg-on-surface-variant/20 rounded flex items-center justify-center font-bold text-sm hover:bg-on-surface-variant/30 transition">
+                Harvard ADS
+            </div>
+        </a>
+
+        <a href="https://www.frontiersin.org/" target="_blank" rel="noopener noreferrer">
+            <div class="h-8 w-24 bg-on-surface-variant/20 rounded flex items-center justify-center font-bold text-sm hover:bg-on-surface-variant/30 transition">
+                Frontiers
+            </div>
+        </a>
+
+        <a href="https://www.questel.com/" target="_blank" rel="noopener noreferrer">
+            <div class="h-8 w-20 bg-on-surface-variant/20 rounded flex items-center justify-center font-bold text-sm hover:bg-on-surface-variant/30 transition">
+                QUEST
+            </div>
+        </a>
+<a href="https://www.proquest.com/" target="_blank" rel="noopener noreferrer">
+    <div class="h-8 w-24 bg-on-surface-variant/20 rounded flex items-center justify-center font-bold text-sm hover:bg-on-surface-variant/30 transition">
+        ProQuest
+    </div>
+</a>
+
+    </div>
+</section>
+</div>
+</main>
+</div>
+<!-- Footer -->
+<footer class="bg-surface-container-highest dark:bg-surface-container-lowest border-t border-outline-variant dark:border-outline w-full py-stack-xl">
+<div class="px-margin-desktop max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<div class="flex flex-col gap-4">
+<div class="text-label-caps font-label-caps text-primary dark:text-inverse-primary">Academia Institute</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Elevating global research standards through rigorous peer review and high-impact publishing since 1924.</p>
+<p class="text-body-sm font-body-sm text-on-surface dark:text-on-surface-variant mt-2">© 2024 Academia Research Institute. All rights reserved.</p>
+</div>
+<div class="flex flex-col gap-2">
+<h4 class="text-label-caps font-label-caps text-primary mb-2">Navigation</h4>
+<div class="grid grid-cols-2 gap-2">
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Ethics</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contacts</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Crossref</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">DOI</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">ORCID</a>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="text-label-caps font-label-caps text-primary">Stay Informed</h4>
+<div class="flex">
+<input class="flex-1 bg-surface border border-outline-variant px-4 py-2 text-body-sm focus:border-primary focus:ring-0" placeholder="Journal newsletter" type="email"/>
+<button class="bg-primary text-on-primary px-4 py-2 font-label-caps text-label-caps">Join</button>
+</div>
+<div class="flex gap-4 opacity-70">
+<span class="material-symbols-outlined cursor-pointer hover:text-primary" data-icon="rss_feed">rss_feed</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary" data-icon="share">share</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary" data-icon="info">info</span>
+</div>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interactions and simple state management
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    window.scrollTo({
+                        top: target.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+
+                    // Update active state in sidebar
+                    document.querySelectorAll('aside nav a').forEach(a => {
+                        a.classList.remove('text-primary', 'font-bold', 'border-l-4', 'border-primary', 'bg-surface-container');
+                        a.classList.add('text-on-secondary-container', 'px-4');
+                    });
+                    this.classList.add('text-primary', 'font-bold', 'border-l-4', 'border-primary', 'bg-surface-container');
+                    this.classList.remove('text-on-secondary-container', 'px-4');
+                    this.classList.add('pl-4');
+                }
+            });
+        });
+
+        // Sticky header behavior
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            const nav = document.querySelector('nav');
+            if (currentScroll > lastScroll && currentScroll > 100) {
+                nav.style.transform = 'translateY(-100%)';
+            } else {
+                nav.style.transform = 'translateY(0)';
+            }
+            nav.style.transition = 'transform 0.3s ease-in-out';
+            lastScroll = currentScroll;
+        });
+    </script>
+</body></html>
+
+

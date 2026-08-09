@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Academia Institute | Excellence in Scientific Publishing</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#000a1e",
+                        "primary-container": "#002147",
+                        "secondary": "#426087",
+                        "secondary-container": "#b3d1fe",
+                        "surface": "#f8f9ff",
+                        "surface-container": "#e5eeff",
+                        "surface-container-low": "#eff4ff",
+                        "surface-container-high": "#dce9ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "surface-variant": "#d3e4fe",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#708ab5",
+                        "on-surface": "#0b1c30",
+                        "on-surface-variant": "#44474e",
+                        "outline": "#74777f",
+                        "outline-variant": "#c4c6cf",
+                        "error": "#ba1a1a"
+                    },
+
+                    spacing: {
+                        "margin-desktop": "64px",
+                        "margin-mobile": "20px",
+                        "stack-sm": "8px",
+                        "stack-md": "16px",
+                        "stack-lg": "32px",
+                        "stack-xl": "64px",
+                        "container-max": "1200px",
+                        "gutter": "24px"
+                    },
+
+                    borderRadius: {
+                        DEFAULT: "2px",
+                        lg: "6px",
+                        xl: "10px"
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings:
+                "FILL" 0,
+                "wght" 400,
+                "GRAD" 0,
+                "opsz" 24;
+            vertical-align: middle;
+        }
+
+        .scrolling-fade {
+            mask-image: linear-gradient(to right,
+                    transparent,
+                    black 10%,
+                    black 90%,
+                    transparent);
+        }
+
+        .journal-card:hover .journal-overlay {
+            opacity: 1;
+        }
+
+        body {
+            background: #f8f9ff;
+            color: #0b1c30;
+            margin: 0;
+            font-family: Inter, sans-serif;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<header class="fixed top-0 left-0 right-0 z-50 bg-surface border-b border-outline-variant backdrop-blur-md">
+
+    <nav class="flex justify-between items-center max-w-container-max mx-auto h-20 px-margin-desktop">
+
+        <div>
+
+            <a href="about.html" class="no-underline">
+
+                <div class="text-2xl font-bold tracking-tight text-primary uppercase">
+                    ARAI
+                </div>
+
+                <div class="text-[11px] tracking-[2px] uppercase text-on-surface-variant">
+                    Academic Research AI
+                </div>
+
+            </a>
+
+        </div>
+
+        <div class="hidden md:flex gap-stack-lg items-center">
+
+            <a href="about.html" class="text-primary border-b-2 border-primary font-bold">
+                About
+            </a>
+
+            <a href="journals.html" class="hover:text-primary transition">
+                Journals
+            </a>
+
+            <a href="register.php" class="hover:text-primary transition">
+                Publish
+            </a>
+
+            <a href="authors.html" class="hover:text-primary transition">
+                Authors
+            </a>
+
+            <a href="reviewers.html" class="hover:text-primary transition">
+                Reviewers
+            </a>
+
+            <a href="archive.php" class="hover:text-primary transition">
+                Archive
+            </a>
+
+        </div>
+
+        <div class="flex items-center gap-stack-md">
+
+            <a href="archive.php" class="material-symbols-outlined hover:scale-110 transition">
+                search
+            </a>
+
+            <a href="signin.php"
+               class="bg-primary text-white px-6 py-2 rounded-lg hover:opacity-90 transition">
+                Sign In
+            </a>
+
+        </div>
+
+    </nav>
+
+</header>
+
+<main class="pt-20">
+
+<!-- Hero Section --> <section class="relative h-[819px] flex items-center overflow-hidden bg-primary-container">
+ <div class="relative z-10 w-full px-margin-desktop max-w-container-max mx-auto">
+ <div class="max-w-3xl"> 
+<span class="text-label-caps font-label-caps text-on-primary-container block mb-4">ESTABLISHED 2004</span>
+ <h1 class="font-display-lg text-display-lg text-on-primary mb-6 leading-tight">
+Excellence in Scientific Publishing</h1>
+ <p class="font-body-md text-body-md text-surface-container-high mb-stack-lg max-w-xl">
+ Advancing the frontiers of global knowledge for over 20 years. We combine rigorous peer review with modern archival precision to serve the international research community. 
+</p>
+ <div class="flex gap-stack-md">
+    <a href="journals.html"
+       class="bg-surface text-primary px-8 py-4 font-label-caps text-label-caps hover:bg-surface-container transition-colors rounded-lg inline-block">
+        Submit Manuscript
+
+    </a>
+
+
+
+    <a href="archive.php"
+
+       class="border border-on-primary text-on-primary px-8 py-4 font-label-caps text-label-caps hover:bg-on-primary/10 transition-colors rounded-lg inline-block">
+
+        Browse Archive
+
+    </a>
+
+
+
+</div></div> </div> </section>
+<section
+    id="editorial-content"
+    class="py-16"
+>
+
+    <div class="max-w-6xl mx-auto px-6">
+
+        <div class="text-center mb-10">
+
+            <span class="text-sm font-bold tracking-widest">
+                LATEST FROM ACADEMIA
+            </span>
+
+            <h2 class="text-3xl font-bold mt-2">
+                News, Videos & Courses
+            </h2>
+
+        </div>
+
+
+        <div
+            id="editorial-content-grid"
+            class="grid grid-cols-1 md:grid-cols-3 gap-6"
+        >
+
+            <p class="text-slate-500">
+                Loading...
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+<!-- About Section -->
+<section class="py-stack-xl px-margin-desktop max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-2 gap-stack-xl items-center">
+
+    <!-- Left -->
+    <div>
+
+        <h2 class="font-headline-md text-headline-md text-primary mb-stack-md">
+            A Legacy of Intellectual Integrity
+        </h2>
+
+        <div class="space-y-stack-md text-on-surface-variant font-body-md">
+
+            <p>
+                The Academia Research Institute is a prestigious global organization dedicated to the dissemination of high-impact scholarly work. Our mission is built upon three pillars: <strong>Quality Research</strong>, <strong>Unwavering Ethics</strong>, and <strong>Global Cooperation</strong>.
+            </p>
+
+            <p>
+                We provide a structured platform for scientists, architects, and researchers to archive their findings within a permanent scholarly record, ensuring that every contribution is validated through a rigorous double-blind peer-review process.
+            </p>
+
+        </div>
+
+        <div class="mt-stack-lg grid grid-cols-2 gap-stack-md border-t border-outline-variant pt-stack-md">
+
+            <div>
+                <span class="block font-headline-md text-headline-md text-primary">
+                    500k+
+                </span>
+
+                <span class="font-label-caps text-label-caps text-on-surface-variant">
+                    CITATIONS ANNUALLY
+                </span>
+            </div>
+
+            <div>
+                <span class="block font-headline-md text-headline-md text-primary">
+                    120
+                </span>
+
+                <span class="font-label-caps text-label-caps text-on-surface-variant">
+                    COUNTRIES REPRESENTED
+                </span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Right -->
+    <div class="relative group">
+
+        <div class="absolute -inset-4 bg-secondary-container/20 rounded-xl blur-2xl group-hover:bg-secondary-container/30 transition-all duration-500"></div>
+
+        <img
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCx2AtLQLanRsjv36nBNiBAiD4hB-0q3QYeSbyIwGWRX0EWjJVxGiqk7D6WdHkwrmS378Ux6StHTk0_6KiNCK9bsrcPtrRiEjoaIH49oF8RMBpAjznQkNPm2-3Tdiw4h5HlfPtHJXFZMWTsyH7bFPHzWsDbhy6ay1uJHg5xLr0CR15obRu0zUTz7M5im9UD7Pi2RrQfiSYegSeZq3PrBFrxlZLKH7qIKsTLW0pmk-hm0_lonHuRS3M"
+            alt="Modern academic research library"
+            class="relative z-10 w-full h-[500px] object-cover rounded-xl border border-outline-variant shadow-lg"
+        >
+
+    </div>
+
+</section>
+
+<!-- Journal Grid -->
+<section class="bg-surface-container-low py-stack-xl">
+
+<div class="px-margin-desktop max-w-container-max mx-auto">
+
+<div class="flex justify-between items-end mb-stack-lg">
+
+<div>
+<span class="text-label-caps font-label-caps text-secondary block mb-2">
+OUR PUBLICATIONS
+</span>
+
+<h2 class="font-headline-md text-headline-md text-primary">
+The Core Collections
+</h2>
+
+</div>
+
+
+<a href="journals.html"
+class="text-label-caps font-label-caps text-primary hover:underline flex items-center gap-1">
+
+VIEW ALL JOURNALS
+
+<span class="material-symbols-outlined text-sm">
+arrow_forward
+</span>
+
+</a>
+
+</div>
+
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+
+
+<!-- CARD TEMPLATE -->
+
+<!-- Engineering -->
+<div class="relative bg-surface border border-outline-variant hover:border-secondary transition-all flex flex-col">
+
+
+<a href="engineering.php"
+class="aspect-[3/4] bg-surface-variant overflow-hidden block">
+
+<img
+class="w-full h-full object-cover"
+src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQSYi-ACI-HwCff_5X81iH5_KqV4H7jvkUo2-WEnUJD0s-cDUikCnvYj4ImDCSLsnN3B8XL9jvwMtgSv3TuxMdDicPLrenUjT7iYQX_y2HELDZwntPoP5mkrLY88rkffnzChc9Meik15Igo4T77PSdYfIsaMlUIHkeLg5RLGcchwOMxdUaxOSFK9efy4tZZAklLsWWSHnoDTxEZpttQyGh_mqtMNn3Gt1A2gsxP8_ehIBo2hunnOg"
+alt="Engineering Journal">
+
+</a>
+
+
+<div class="absolute top-3 right-3 bg-primary text-on-primary px-2 py-1 font-code-sm">
+IF: 5.8
+</div>
+
+
+<div class="p-stack-md">
+
+<h3 class="font-title-lg text-title-lg text-primary mb-1">
+Engineering
+</h3>
+
+
+<p class="font-code-sm text-code-sm text-on-surface-variant mb-4">
+ISSN: 1045-8824
+</p>
+
+
+<a href="engineering.php"
+class="block text-label-caps font-label-caps text-secondary border-t border-outline-variant pt-2 hover:text-primary">
+
+SUBMIT NOW
+
+</a>
+
+
+</div>
+
+</div>
+
+
+
+
+
+<!-- AI -->
+
+<div class="relative bg-surface border border-outline-variant hover:border-secondary transition-all flex flex-col">
+
+
+<a href="ai.php"
+class="aspect-[3/4] bg-surface-variant overflow-hidden block">
+
+<img
+class="w-full h-full object-cover"
+src="https://lh3.googleusercontent.com/aida-public/AB6AXuAA6A7wkvLgG4XWAGstqJxk3pPcqf1ciXCgL9kV-4MG3yzIZmpnz9ZNTw9owOE1It28V4PfjiQBYPdg0tLgqh0j54Fdpxyr6K20bA3wTGcc9XJm4XohmxMxxftteCdtr0L2uOX5nUdykl5KovReaSDhvbFGG5aUo-OzjyB7NePHcUQcvGdGAPeOurQzz-WDgP-tQm8G3af3AJuUs4mZZ8ojPpzrp6EqITl_nKsth0Lhxm7tzPirbQc"
+alt="AI Journal">
+
+</a>
+
+
+<div class="absolute top-3 right-3 bg-primary text-on-primary px-2 py-1 font-code-sm">
+IF: 7.2
+</div>
+
+
+<div class="p-stack-md">
+
+<h3 class="font-title-lg text-title-lg text-primary mb-1">
+AI & Robotics
+</h3>
+
+
+<p class="font-code-sm text-code-sm text-on-surface-variant mb-4">
+ISSN: 2190-3321
+</p>
+
+
+<a href="ai.php"
+class="block text-label-caps font-label-caps text-secondary border-t border-outline-variant pt-2 hover:text-primary">
+
+SUBMIT NOW
+
+</a>
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+<!-- Medicine -->
+
+
+<div class="relative bg-surface border border-outline-variant hover:border-secondary transition-all flex flex-col">
+
+
+<a href="medicine.php"
+class="aspect-[3/4] bg-surface-variant overflow-hidden block">
+
+
+<img
+class="w-full h-full object-cover"
+src="https://lh3.googleusercontent.com/aida-public/AB6AXuApKet2IO_wOnj5bWcpyKkzyAWgJZsbPQqzUx-lfO0n_PUfmjtnGPvnmHUTRMUdlaZgCD6EFKneDkTXEqUBVcoGy9gT5Nj_bk33n6X-IcSbPphZa6aBRrhVhmEm6ZK56uxJGpsMQKQ1OebF_hsRrDCTrjnqBkLc0-vGA6TfZSYGjS2KcBS5xhMmGbWv8B7e7GCC0Jzog6FJkkB_e1CYITq0rm3w_Z289cDJHM8igpsOUuH9NwvH_tI"
+alt="Medicine Journal">
+
+</a>
+
+
+<div class="absolute top-3 right-3 bg-primary text-on-primary px-2 py-1 font-code-sm">
+
+IF: 12.4
+
+</div>
+
+
+<div class="p-stack-md">
+
+
+<h3 class="font-title-lg text-title-lg text-primary mb-1">
+
+Medicine
+
+</h3>
+
+
+<p class="font-code-sm text-code-sm text-on-surface-variant mb-4">
+
+ISSN: 0028-4793
+
+</p>
+
+
+<a href="medicine.php"
+class="block text-label-caps font-label-caps text-secondary border-t border-outline-variant pt-2 hover:text-primary">
+
+SUBMIT NOW
+
+</a>
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+<!-- Architecture -->
+
+
+<div class="relative bg-surface border border-outline-variant hover:border-secondary transition-all flex flex-col">
+
+
+<a href="architecture.php"
+class="aspect-[3/4] bg-surface-variant overflow-hidden block">
+
+
+<img
+class="w-full h-full object-cover"
+src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbJ3dcLsM5B1mj1QjGOkMfSsVBLwCtZ3PAKU7p08xkpmj9ikcgyf0aKJAsSZ02RXmIiWuAupDTnvmuXtkGErNqYPOw-wdCrlMlRDZHZZVyD0_ehMPm9jn2nIOR9pocSVGsS_XbNUzKmt7-cBFR4A4D7qGEgV0crrUuVZ-udQAjbaxfy_iZyIfmQlSQ0eITbNl86LVSOCpEuTratYLFvFRzdHAWRq-FaDlV6eJmv2PdubxsKHZjWcE"
+alt="Architecture Journal">
+
+</a>
+
+
+<div class="absolute top-3 right-3 bg-primary text-on-primary px-2 py-1 font-code-sm">
+
+IF: 3.1
+
+</div>
+
+
+
+<div class="p-stack-md">
+
+
+<h3 class="font-title-lg text-title-lg text-primary mb-1">
+
+Architecture
+
+</h3>
+
+
+<p class="font-code-sm text-code-sm text-on-surface-variant mb-4">
+
+ISSN: 1341-7029
+
+</p>
+
+
+
+<a href="architecture.php"
+class="block text-label-caps font-label-caps text-secondary border-t border-outline-variant pt-2 hover:text-primary">
+
+SUBMIT NOW
+
+</a>
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- Membership Tiers Section -->
+<section class="py-stack-xl px-margin-desktop max-w-container-max mx-auto">
+<div class="text-center mb-stack-lg">
+<h2 class="font-headline-md text-headline-md text-primary">Institutional &amp; Professional Tiers</h2>
+<p class="text-on-surface-variant font-body-md mt-4 max-w-2xl mx-auto">Select the membership level that best suits your research objectives, from individual reading access to full institutional publishing rights.</p>
+</div>
+<div class="overflow-x-auto scrolling-fade pb-stack-md">
+<table class="w-full border-collapse">
+<thead>
+<tr class="text-left font-label-caps text-label-caps text-secondary border-b-2 border-primary">
+<th class="py-stack-md px-4 min-w-[200px]">FEATURES</th>
+<th class="py-stack-md px-4 text-center min-w-[150px]">
+    <a href="free.html">FREE</a>
+</th>
+<th class="py-stack-md px-4 text-center min-w-[150px]">
+    <a href="authors.html">AUTHOR</a>
+</th>
+<th class="py-stack-md px-4 text-center min-w-[150px] border-x border-t-4 border-t-[#c5a059] bg-surface-container-low">
+    <a href="professional.html">PROFESSIONAL</a>
+</th>
+<th class="py-stack-md px-4 text-center min-w-[150px]">
+    <a href="institutional.html">INSTITUTIONAL</a>
+</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm text-on-surface">
+<tr class="border-b border-outline-variant">
+<td class="py-4 px-4 font-bold">Reading Access</td>
+<td class="py-4 px-4 text-center">Abstracts Only</td>
+<td class="py-4 px-4 text-center">Open Access</td>
+<td class="py-4 px-4 text-center bg-surface-container-low border-x">Full Access</td>
+<td class="py-4 px-4 text-center">Unlimited</td>
+</tr>
+<tr class="border-b border-outline-variant">
+<td class="py-4 px-4 font-bold">Manuscript Submission</td>
+<td class="py-4 px-4 text-center text-error"><span class="material-symbols-outlined">close</span></td>
+<td class="py-4 px-4 text-center text-on-secondary-container"><span class="material-symbols-outlined">check</span></td>
+<td class="py-4 px-4 text-center bg-surface-container-low border-x text-on-secondary-container"><span class="material-symbols-outlined">check</span></td>
+<td class="py-4 px-4 text-center text-on-secondary-container"><span class="material-symbols-outlined">check</span></td>
+</tr>
+<tr class="border-b border-outline-variant">
+<td class="py-4 px-4 font-bold">Reviewer Application</td>
+<td class="py-4 px-4 text-center text-error"><span class="material-symbols-outlined">close</span></td>
+<td class="py-4 px-4 text-center text-error"><span class="material-symbols-outlined">close</span></td>
+<td class="py-4 px-4 text-center bg-surface-container-low border-x text-on-secondary-container"><span class="material-symbols-outlined">check</span></td>
+<td class="py-4 px-4 text-center text-on-secondary-container"><span class="material-symbols-outlined">check</span></td>
+</tr>
+<tr class="border-b border-outline-variant">
+<td class="py-4 px-4 font-bold">Annual APC Waiver</td>
+<td class="py-4 px-4 text-center">None</td>
+<td class="py-4 px-4 text-center">10% Off</td>
+<td class="py-4 px-4 text-center bg-surface-container-low border-x">1 Voucher</td>
+<td class="py-4 px-4 text-center">Unlimited</td>
+</tr>
+<tr>
+<td class="py-6 px-4"></td>
+<td class="py-6 px-4 text-center"><span class="font-headline-md text-headline-md">$0</span></td>
+<td class="py-6 px-4 text-center">
+<a href="author.html" class="font-headline-md text-headline-md">$149</a>
+</td>
+<td class="py-6 px-4 text-center bg-surface-container-low border-x border-b">
+<a href="professional.html"
+class="font-headline-md text-headline-md text-[#c5a059]">
+$499
+</a></td>
+<td class="py-6 px-4 text-center">
+<a href="institutional.html"
+class="font-headline-md text-headline-md">
+Contact
+</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+
+
+
+
+
+<!-- Footer: Execution of JSON style keys -->
+<footer class="bg-surface-container-highest dark:bg-surface-container-lowest border-t border-outline-variant dark:border-outline">
+<div class="w-full py-stack-xl px-margin-desktop max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<div>
+<div class="text-label-caps font-label-caps text-primary dark:text-inverse-primary mb-stack-md">ACADEMIA INSTITUTE</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">The premier global organization for validated research dissemination and editorial excellence.</p>
+<div class="flex gap-stack-md mt-stack-lg">
+<img class="h-8 w-auto grayscale hover:grayscale-0 transition-all opacity-70 hover:opacity-100" data-alt="Official Crossref logo in high resolution for a scientific website footer. The logo is minimalist, with clear typography and a distinctive orange and gray color scheme, looking professional and authentic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7AVtNTriv3TmpOWnxGzAmH5TM3s2wln8LbpQKZFn8zzQcZN0dFeaQXjUfDp5oj6b26hYtkpphJraA0_UzD5r0GBPyIl9ats_Q4_mc6FxPIhyMrI5nutqpyIIQBk9xGRm196PC7bhTzrqEyFjN9taIkM_L6mflDVUfXzucsYsdSEk8GOH74Oau5XUnjsSYlDmP9kKWttAvj-F4xVaiFvFMCLqk76qQtlx2UcsdZ5SS850eo6aHedg"/>
+<img class="h-8 w-auto grayscale hover:grayscale-0 transition-all opacity-70 hover:opacity-100" data-alt="Official ORCID logo in high resolution. The logo features the iconic green circle icon with the ID lettering. It should be sized appropriately for a scientific journal's footer, appearing clean and professional." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqHryOjw_ZTEmS7TwTP0WgSdpayXzSH4qric6yr5lJprY9d1lJGnRM8fp97Ug6lk5ESf_OVqMK8SFF1ZcOoF2R_aGiKtd8OEaSqyk22WsKaefLiZGLafj2UT2AAlYpAzOu_OXQcdzwyDEo5TxtgaD382PanoUwBNkD_aUOzTJaPkHfzanpJ9qu4cHhXmzbco95A2fPGbNQtrsL_ED3P_F7LcFDlEOABKwRRgXiE69VdiXh1K5AVGw"/>
+<img class="h-8 w-auto grayscale hover:grayscale-0 transition-all opacity-70 hover:opacity-100" data-alt="Official DOI (Digital Object Identifier) logo. The design is simple and bold, centered around the 'doi' letters. It should be presented in a way that aligns with prestigious academic standards." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8ZYXIlIGqlcyMtT3RidO9hLegayqsN1GjY4g9MKQV-mXBqwfDtG3DM_VdzzQqB_8LNOdEQhbYIurI_e_4XQLcxUg0V3k1-wlbogFlWbpVUij2lPzaR4v_tG1dFy1cBpLrhl4wxiqJHGOL60zYhC2I808q0bufib8JRXZwc_GjCCBt2JTMt_eti--KS-zKkU3iXxGztzzT_ShEx0iowxq5iuAqbY8fNSCjkhyf6RGQ2sKBTTjtqrc"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-stack-md">
+<div class="flex flex-col gap-2">
+<span class="text-label-caps font-label-caps text-on-surface mb-2">QUICK LINKS</span>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Ethics</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contacts</a>
+</div>
+<div class="flex flex-col gap-2">
+<span class="text-label-caps font-label-caps text-on-surface mb-2">PARTNERS</span>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Crossref</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">DOI</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">ORCID</a>
+</div>
+</div>
+<div class="flex flex-col justify-between">
+<div class="bg-surface p-4 border border-outline-variant">
+<span class="text-label-caps font-label-caps text-on-surface mb-2 block">NEWSLETTER</span>
+<div class="flex gap-0">
+<input class="bg-transparent border-outline-variant focus:ring-primary focus:border-primary w-full text-body-sm p-2" placeholder="Email Address" type="email"/>
+<button class="bg-primary text-on-primary px-4"><span class="material-symbols-outlined">send</span></button>
+</div>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-stack-md">
+                    © 2026 Academia Research Institute. All rights reserved.
+                </p>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interactions and effects
+        document.addEventListener('DOMContentLoaded', () => {
+            const navbar = document.querySelector('header');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('shadow-md');
+                    navbar.classList.remove('border-b');
+                } else {
+                    navbar.classList.remove('shadow-md');
+                    navbar.classList.add('border-b');
+                }
+            });
+
+            // Smooth reveal for cards
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('opacity-100', 'translate-y-0');
+                        entry.target.classList.remove('opacity-0', 'translate-y-4');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.journal-card, section').forEach(el => {
+                el.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-4');
+                observer.observe(el);
+            });
+        });
+    </script>
+    <script>
+
+async function loadEditorialContent() {
+
+    try {
+
+        const response =
+            await fetch("about-content.php");
+
+        const items =
+            await response.json();
+
+
+        const container =
+            document.getElementById(
+                "editorial-content-grid"
+            );
+
+
+        container.innerHTML = "";
+
+
+        if (items.length === 0) {
+
+            container.innerHTML = `
+                <p class="text-slate-500">
+                    No published content yet.
+                </p>
+            `;
+
+            return;
+        }
+
+
+        items.forEach(item => {
+
+            let media = "";
+
+
+            // VIDEO
+
+            if (
+                item.type === "Video" &&
+                item.media_url
+            ) {
+
+                media = `
+                    <div class="aspect-video mb-4">
+
+                        <iframe
+                            src="${item.media_url}"
+                            class="w-full h-full rounded-lg"
+                            frameborder="0"
+                            allowfullscreen>
+                        </iframe>
+
+                    </div>
+                `;
+
+            }
+
+
+            // IMAGE
+
+            else if (item.thumbnail_url) {
+
+                media = `
+                    <img
+                        src="${item.thumbnail_url}"
+                        class="w-full h-48 object-cover rounded-lg mb-4"
+                        alt="${item.title}"
+                    >
+                `;
+
+            }
+
+
+            container.innerHTML += `
+
+                <article
+                    class="bg-white border rounded-xl overflow-hidden shadow-sm"
+                >
+
+                    ${media}
+
+                    <div class="p-6">
+
+                        <span
+                            class="text-xs font-bold uppercase text-blue-700"
+                        >
+                            ${item.type}
+                        </span>
+
+
+                        <h3
+                            class="text-xl font-bold mt-2"
+                        >
+                            ${item.title}
+                        </h3>
+
+
+                        <p
+                            class="text-slate-600 mt-3"
+                        >
+                            ${item.description || ""}
+                        </p>
+
+
+                        ${
+                            item.type === "Course" &&
+                            item.media_url
+                            ?
+                            `
+                            <a
+                                href="${item.media_url}"
+                                target="_blank"
+                                class="inline-block mt-5 bg-blue-700 text-white px-5 py-2 rounded-lg"
+                            >
+                                Open Course
+                            </a>
+                            `
+                            :
+                            ""
+                        }
+
+
+                    </div>
+
+                </article>
+
+            `;
+
+        });
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Editorial content error:",
+            error
+        );
+
+    }
+
+}
+
+
+loadEditorialContent();
+
+</script>
+</body></html>

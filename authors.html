@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Distinguished Researchers | ScholarArchiv</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&amp;family=Inter:wght@400;600;700&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "primary-container": "#002147",
+                        "on-secondary-fixed": "#001c39",
+                        "outline": "#74777f",
+                        "primary-fixed-dim": "#aec7f6",
+                        "secondary-fixed-dim": "#abc8f5",
+                        "inverse-primary": "#aec7f6",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "tertiary-container": "#3d1500",
+                        "inverse-surface": "#213145",
+                        "on-primary-fixed-variant": "#2d476f",
+                        "tertiary": "#180500",
+                        "on-surface": "#0b1c30",
+                        "secondary": "#426087",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#ffdbcb",
+                        "secondary-fixed": "#d3e3ff",
+                        "on-secondary-fixed-variant": "#2a486e",
+                        "on-primary-fixed": "#001b3d",
+                        "on-background": "#0b1c30",
+                        "surface-container-low": "#eff4ff",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#f8f9ff",
+                        "secondary-container": "#b3d1fe",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#dce9ff",
+                        "surface": "#f8f9ff",
+                        "background": "#f8f9ff",
+                        "on-tertiary-fixed": "#341100",
+                        "surface-tint": "#465f88",
+                        "outline-variant": "#c4c6cf",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-tertiary-fixed-variant": "#6c391d",
+                        "surface-container": "#e5eeff",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb691",
+                        "primary": "#000a1e",
+                        "on-primary-container": "#708ab5",
+                        "primary-fixed": "#d6e3ff",
+                        "on-tertiary-container": "#b97958",
+                        "on-secondary-container": "#3c5980",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#d3e4fe",
+                        "surface-dim": "#cbdbf5",
+                        "on-surface-variant": "#44474e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1200px",
+                        "stack-lg": "32px",
+                        "stack-md": "16px",
+                        "stack-xl": "64px",
+                        "stack-sm": "8px",
+                        "margin-mobile": "20px",
+                        "gutter": "24px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "display-lg-mobile": ["Playfair Display"],
+                        "code-sm": ["JetBrains Mono"],
+                        "display-lg": ["Playfair Display"],
+                        "headline-md": ["Playfair Display"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+                        "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "display-lg-mobile": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "code-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["30px", {"lineHeight": "38px", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "22px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .academic-grid-line {
+            background-image: linear-gradient(to right, #e2e8f0 1px, transparent 1px);
+            background-size: 40px 100%;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .researcher-card:hover {
+            border-color: #426087; /* Secondary color per style guidance */
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md">
+<!-- TopNavBar -->
+<nav class="w-full top-0 sticky z-50 bg-surface-container-lowest dark:bg-primary-container border-b border-outline-variant dark:border-outline">
+<div class="flex justify-between items-center h-16 px-margin-desktop max-w-container-max mx-auto">
+<div class="font-display-lg text-headline-md font-bold text-primary dark:text-primary-fixed">ScholarArchiv</div>
+<div class="hidden md:flex items-center space-x-stack-lg">
+<a class="font-label-caps text-label-caps uppercase tracking-wider text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="journals.html">Journals</a>
+<a class="font-label-caps text-label-caps uppercase tracking-wider text-primary dark:text-primary-fixed font-bold border-b-2 border-primary dark:border-primary-fixed pb-1" href="archive.html">Articles</a>
+<a class="font-label-caps text-label-caps uppercase tracking-wider text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="publish.html">Submit</a>
+<a class="font-label-caps text-label-caps uppercase tracking-wider text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="reviewers.html">Peer Review</a>
+</div>
+ <div class="flex items-center gap-stack-md">
+
+            <a href="search.html" class="material-symbols-outlined hover:scale-110 transition">
+                search
+            </a>
+
+            <a href="signin.html"
+               class="bg-primary text-white px-6 py-2 rounded-lg hover:opacity-90 transition">
+                Sign In
+            </a>
+
+        </div>
+</div>
+</nav>
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-xl">
+<!-- Header Section -->
+<header class="mb-stack-xl border-l-4 border-primary pl-stack-md">
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-primary mb-stack-sm">Distinguished Researchers</h1>
+<p class="font-body-md text-on-surface-variant max-w-[720px]">
+                Explore leading researchers from MIT, Harvard University, and global academic institutions. Connect with scientists, professors, and authors contributing to advanced research across multiple disciplines.
+            </p>
+</header>
+<!-- Filter/Tab Bar -->
+<div class="flex flex-wrap gap-stack-md mb-stack-xl border-b border-outline-variant pb-stack-sm">
+<button class="px-stack-md py-2 font-label-caps text-label-caps uppercase text-primary border-b-2 border-primary">All Institutions</button>
+<button class="px-stack-md py-2 font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-primary transition-colors">MIT</button>
+<button class="px-stack-md py-2 font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-primary transition-colors">Harvard University</button>
+<button class="px-stack-md py-2 font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-primary transition-colors">Nazarbayev University</button>
+</div>
+<!-- Researchers Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Researcher 1 -->
+<div class="researcher-card group bg-surface-container-lowest border border-outline-variant p-stack-md transition-all duration-300 flex flex-col h-full">
+<div class="relative mb-stack-md overflow-hidden aspect-[4/5] bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Professional studio portrait of a distinguished male professor with an authoritative yet welcoming expression. He is wearing a dark academic blazer and glasses, set against a neutral, high-key grey background. The lighting is soft and architectural, emphasizing intellectual clarity and scholarly prestige in a modern academic style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrEsD3CFOY0m7GaZdnYhTb-p7RUXlt4YJnDAzY7_H0wfbyjopuwamdSfjlKUx9qAd75o2H6YA9esTKWgNKO_R3UNTNwztXB8xOwZd-cStwK8bSvWkj4iPnPcTFZG1268o4QLHYvVzIOX6bfZs_L88btT8UinAFyGLEQ1kynsttMhUkqDQBfzYLcRFg-PQ3IL6B8UbUPfcwF1YWWrd1LHsKfM21szfpN3WmBuR_p-qn_38S37AXdOs"/>
+<div class="absolute top-stack-sm right-stack-sm bg-surface-container-lowest/90 px-stack-sm py-1 border border-outline-variant">
+<span class="font-code-sm text-code-sm text-secondary uppercase">MIT</span>
+</div>
+</div>
+<div class="flex-grow">
+<span class="font-label-caps text-label-caps text-on-tertiary-fixed-variant uppercase mb-1 block">Mechanical Engineering</span>
+<h3 class="font-headline-md text-title-lg text-primary mb-1">Rohan Abeyaratne</h3>
+<p class="font-body-sm text-on-surface-variant italic mb-stack-md">Massachusetts Institute of Technology (MIT)</p>
+<div class="space-y-2 mb-stack-md">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[18px] text-secondary mt-1">science</span>
+<p class="font-body-sm text-on-surface">Solid Mechanics, Materials Science, Computational Engineering</p>
+</div>
+</div>
+</div>
+<a class="mt-auto pt-stack-md border-t border-outline-variant flex items-center justify-between text-primary hover:text-secondary transition-colors group/link" href="#">
+<span class="font-label-caps text-label-caps uppercase">ResearchGate Profile</span>
+<span class="material-symbols-outlined transition-transform group-hover/link:translate-x-1">arrow_forward</span>
+</a>
+</div>
+<!-- Researcher 2 -->
+<div class="researcher-card group bg-surface-container-lowest border border-outline-variant p-stack-md transition-all duration-300 flex flex-col h-full">
+<div class="relative mb-stack-md overflow-hidden aspect-[4/5] bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A high-resolution professional headshot of a young male research scientist with a focused, intelligent gaze. He is dressed in business casual attire in a bright, modern office environment with soft bokeh of glass and minimalist laboratory elements. The image uses a clean, scientific aesthetic with natural daylighting and a cool-toned color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuABreXVVKrLOy6ok5sXxPqjb6tbVpGb-5VX9mQ4lEmConv2ZkESm2zzOkvHQGvhFCDkatrH7h44eIEeNdWOlQdS_H1aSGaUq3MKvPaeOZGLMhKFS4LWs3azd4GsQTK-Yl99pUU0dkkY37puPoyjSIOl1AAZo2iQJIP0S72jeIqoqQ3t12sJEdhVf-tXggQLAt4hwkOeXtqbxZCoqjhegL6wtPD-M0WpaDOrpb9w-3n93hIP5auMzNA"/>
+<div class="absolute top-stack-sm right-stack-sm bg-surface-container-lowest/90 px-stack-sm py-1 border border-outline-variant">
+<span class="font-code-sm text-code-sm text-secondary uppercase">MIT</span>
+</div>
+</div>
+<div class="flex-grow">
+<span class="font-label-caps text-label-caps text-on-tertiary-fixed-variant uppercase mb-1 block">Artificial Intelligence</span>
+<h3 class="font-headline-md text-title-lg text-primary mb-1">Faez Ahmed</h3>
+<p class="font-body-sm text-on-surface-variant italic mb-stack-md">Massachusetts Institute of Technology (MIT)</p>
+<div class="space-y-2 mb-stack-md">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[18px] text-secondary mt-1">memory</span>
+<p class="font-body-sm text-on-surface">AI Engineering, Generative Design, Machine Learning</p>
+</div>
+</div>
+</div>
+<a class="mt-auto pt-stack-md border-t border-outline-variant flex items-center justify-between text-primary hover:text-secondary transition-colors group/link" href="#">
+<span class="font-label-caps text-label-caps uppercase">ResearchGate Profile</span>
+<span class="material-symbols-outlined transition-transform group-hover/link:translate-x-1">arrow_forward</span>
+</a>
+</div>
+<!-- Researcher 3 -->
+<div class="researcher-card group bg-surface-container-lowest border border-outline-variant p-stack-md transition-all duration-300 flex flex-col h-full">
+<div class="relative mb-stack-md overflow-hidden aspect-[4/5] bg-surface-container">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A professional and elegant portrait of a female academic researcher. She possesses a confident and visionary expression, wearing professional attire in deep navy tones. The background is a blurred academic library with warm wooden textures and leather-bound books, creating a sense of history and intellectual depth in a high-contrast minimalist lighting style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVrdqYZaPHliLPtOWoY8OpetlZlxDT99FIWTCpowmNwWXYAgwnedsxVeoy2rh35Z4duwN852J4S7Qhuc2Tlzt25iTv4QKg6Ie5cBoPeYdMX12bl29g4qYRaOFoB7216IAcslOff22UicB_dydtuii0fLPYfJxweO9Sn_ndXtPqkE1-DFVGF9guYtdLY1aEHI0sf9KW_C1yvDBfd4BjCtyunhRieINDp-TUlP8aUXyaX6d5-mA2WHk"/>
+<div class="absolute top-stack-sm right-stack-sm bg-surface-container-lowest/90 px-stack-sm py-1 border border-outline-variant">
+<span class="font-code-sm text-code-sm text-secondary uppercase">KZ</span>
+</div>
+</div>
+<div class="flex-grow">
+<span class="font-label-caps text-label-caps text-on-tertiary-fixed-variant uppercase mb-1 block">Scientific Innovation</span>
+<h3 class="font-headline-md text-title-lg text-primary mb-1">Gulshat Sarsenova</h3>
+<p class="font-body-sm text-on-surface-variant italic mb-stack-md">Kazakhstan Academic Researcher</p>
+<div class="space-y-2 mb-stack-md">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[18px] text-secondary mt-1">lightbulb</span>
+<p class="font-body-sm text-on-surface">Engineering Research, Scientific Innovation, Education</p>
+</div>
+</div>
+</div>
+<a class="mt-auto pt-stack-md border-t border-outline-variant flex items-center justify-between text-primary hover:text-secondary transition-colors group/link" href="#">
+<span class="font-label-caps text-label-caps uppercase">ResearchGate Profile</span>
+<span class="material-symbols-outlined transition-transform group-hover/link:translate-x-1">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Institutional Spotlight (Bento Style) -->
+<section class="mt-stack-xl pt-stack-xl border-t border-outline-variant">
+<h2 class="font-headline-md text-headline-md text-primary mb-stack-lg">Institutional Reach</h2>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-stack-md">
+<div class="md:col-span-2 bg-primary-container p-stack-lg text-on-primary rounded">
+<h4 class="font-title-lg text-title-lg mb-stack-sm">Global Collaboration</h4>
+<p class="font-body-sm opacity-80 mb-stack-md">ScholarArchiv facilitates cross-border research initiatives between MIT, Harvard, and international partners to solve pressing global challenges.</p>
+<button class="border border-on-primary/30 px-stack-md py-2 font-label-caps text-label-caps uppercase hover:bg-white/10 transition-colors">Partner with Us</button>
+</div>
+<div class="bg-surface-container-high p-stack-lg border border-outline-variant rounded">
+<span class="material-symbols-outlined text-primary mb-2">school</span>
+<h4 class="font-title-lg text-title-lg text-primary">150+</h4>
+<p class="font-label-caps text-label-caps uppercase text-on-surface-variant">Affiliated Labs</p>
+</div>
+<div class="bg-surface-container-high p-stack-lg border border-outline-variant rounded">
+<span class="material-symbols-outlined text-primary mb-2">public</span>
+<h4 class="font-title-lg text-title-lg text-primary">85</h4>
+<p class="font-label-caps text-label-caps uppercase text-on-surface-variant">Countries Represented</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-stack-xl mt-stack-xl bg-primary dark:bg-primary-container border-t border-outline dark:border-outline-variant">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-lg px-margin-desktop max-w-container-max mx-auto">
+<div class="space-y-stack-md">
+<div class="font-display-lg text-title-lg font-bold text-on-primary dark:text-primary-fixed">ScholarArchiv</div>
+<p class="text-on-primary-fixed-variant dark:text-on-primary-container font-body-sm max-w-md">
+                    Advancing the boundaries of human knowledge through rigorous peer review and open-access excellence. A repository of elite scholarly works.
+                </p>
+<p class="font-body-sm text-on-primary-fixed-variant dark:text-on-primary-container opacity-60">
+                    © 2024 International Research Institute. All rights reserved.
+                </p>
+</div>
+<div class="flex flex-col md:items-end justify-between space-y-stack-md md:space-y-0">
+<div class="flex flex-wrap md:justify-end gap-x-stack-lg gap-y-2">
+<a class="font-body-sm text-body-sm text-on-primary-fixed-variant dark:text-on-primary-container hover:text-on-primary hover:underline transition-all" href="#">Ethics &amp; Integrity</a>
+<a class="font-body-sm text-body-sm text-on-primary-fixed-variant dark:text-on-primary-container hover:text-on-primary hover:underline transition-all" href="#">Open Access Policy</a>
+<a class="font-body-sm text-body-sm text-on-primary-fixed-variant dark:text-on-primary-container hover:text-on-primary hover:underline transition-all" href="#">Privacy Policy</a>
+<a class="font-body-sm text-body-sm text-on-primary-fixed-variant dark:text-on-primary-container hover:text-on-primary hover:underline transition-all" href="#">Terms of Use</a>
+<a class="font-body-sm text-body-sm text-on-primary-fixed-variant dark:text-on-primary-container hover:text-on-primary hover:underline transition-all" href="#">Contact Us</a>
+</div>
+<div class="flex space-x-stack-md">
+<span class="material-symbols-outlined text-on-primary cursor-pointer hover:opacity-70">language</span>
+<span class="material-symbols-outlined text-on-primary cursor-pointer hover:opacity-70">terminal</span>
+<span class="material-symbols-outlined text-on-primary cursor-pointer hover:opacity-70">rss_feed</span>
+</div>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interactions for tab switching visual feedback
+        const filterButtons = document.querySelectorAll('.px-stack-md.py-2.font-label-caps');
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => {
+                    b.classList.remove('text-primary', 'border-b-2', 'border-primary');
+                    b.classList.add('text-on-surface-variant');
+                });
+                btn.classList.add('text-primary', 'border-b-2', 'border-primary');
+                btn.classList.remove('text-on-surface-variant');
+            });
+        });
+
+        // Sticky Navbar subtle shadow on scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 20) {
+                nav.classList.add('shadow-sm');
+            } else {
+                nav.classList.remove('shadow-sm');
+            }
+        });
+    </script>
+</body></html>

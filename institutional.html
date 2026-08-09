@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Institutional Partners | Global Research Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Playfair+Display:wght@700&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "surface-tint": "#465f88",
+                "on-error": "#ffffff",
+                "on-secondary-fixed": "#001c39",
+                "on-tertiary": "#ffffff",
+                "surface-dim": "#cbdbf5",
+                "on-error-container": "#93000a",
+                "tertiary": "#180500",
+                "on-secondary-container": "#3c5980",
+                "error": "#ba1a1a",
+                "primary-fixed": "#d6e3ff",
+                "surface-container-lowest": "#ffffff",
+                "on-secondary-fixed-variant": "#2a486e",
+                "on-tertiary-fixed": "#341100",
+                "primary-fixed-dim": "#aec7f6",
+                "tertiary-fixed-dim": "#ffb691",
+                "primary": "#000a1e",
+                "surface": "#f8f9ff",
+                "on-tertiary-fixed-variant": "#6c391d",
+                "inverse-primary": "#aec7f6",
+                "on-background": "#0b1c30",
+                "tertiary-container": "#3d1500",
+                "outline-variant": "#c4c6cf",
+                "surface-container": "#e5eeff",
+                "outline": "#74777f",
+                "inverse-surface": "#213145",
+                "on-secondary": "#ffffff",
+                "surface-bright": "#f8f9ff",
+                "on-tertiary-container": "#b97958",
+                "secondary": "#426087",
+                "primary-container": "#002147",
+                "on-primary-fixed": "#001b3d",
+                "background": "#f8f9ff",
+                "surface-container-highest": "#d3e4fe",
+                "on-primary": "#ffffff",
+                "error-container": "#ffdad6",
+                "on-surface": "#0b1c30",
+                "on-surface-variant": "#44474e",
+                "on-primary-fixed-variant": "#2d476f",
+                "secondary-fixed": "#d3e3ff",
+                "tertiary-fixed": "#ffdbcb",
+                "on-primary-container": "#708ab5",
+                "surface-container-low": "#eff4ff",
+                "surface-variant": "#d3e4fe",
+                "secondary-container": "#b3d1fe",
+                "inverse-on-surface": "#eaf1ff",
+                "secondary-fixed-dim": "#abc8f5",
+                "surface-container-high": "#dce9ff"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+            },
+            "spacing": {
+                "container-max": "1200px",
+                "stack-xl": "64px",
+                "stack-sm": "8px",
+                "stack-md": "16px",
+                "gutter": "24px",
+                "margin-mobile": "20px",
+                "stack-lg": "32px",
+                "margin-desktop": "64px"
+            },
+            "fontFamily": {
+                "body-md": ["Inter"],
+                "body-sm": ["Inter"],
+                "code-sm": ["JetBrains Mono"],
+                "title-lg": ["Inter"],
+                "display-lg": ["Playfair Display"],
+                "display-lg-mobile": ["Playfair Display"],
+                "headline-md": ["Playfair Display"],
+                "label-caps": ["Inter"]
+            },
+            "fontSize": {
+                "body-md": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+                "body-sm": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                "code-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                "display-lg": ["48px", {"lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "display-lg-mobile": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                "headline-md": ["30px", {"lineHeight": "38px", "fontWeight": "600"}],
+                "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .academic-border { border: 1px solid #e2e8f0; }
+        .academic-hover:hover { border-color: #426087; transition: border-color 0.2s ease-in-out; }
+        .ambient-lift { box-shadow: 0 4px 20px rgba(0, 33, 71, 0.05); }
+        .timeline-line::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: #c4c6cf; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopNavBar (Shared Component) -->
+<nav class="bg-surface dark:bg-surface-dim text-primary dark:text-primary-fixed-dim w-full top-0 sticky z-50 border-b border-outline-variant dark:border-outline">
+<div class="flex justify-between items-center h-20 px-gutter max-w-container-max mx-auto">
+<div class="font-display-lg text-display-lg text-primary dark:text-primary-fixed-dim cursor-pointer">
+                Global Research Hub
+            </div>
+<div class="hidden md:flex items-center gap-x-8">
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200 cursor-pointer" href="journals.html">Journals</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200 cursor-pointer" href="search.html">Research</a>
+<a class="text-primary dark:text-primary-fixed-dim border-b-2 border-primary dark:border-primary-fixed-dim pb-1 cursor-pointer" href="institutional.html">Partners</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200 cursor-pointer" href="about.html">About</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200 cursor-pointer" href="my-submissions.html">Submissions</a>
+</div>
+<div class="flex items-center gap-stack-md">
+
+            <a href="search.html" class="material-symbols-outlined hover:scale-110 transition">
+                search
+            </a>
+
+            <a href="signin.html"
+               class="bg-primary text-white px-6 py-2 rounded-lg hover:opacity-90 transition">
+                Sign In
+            </a>
+
+        </div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="max-w-container-max mx-auto px-gutter mb-stack-xl">
+<!-- Hero Section -->
+<section class="py-stack-xl text-center border-b border-outline-variant">
+<div class="max-w-[800px] mx-auto">
+<span class="font-label-caps text-label-caps text-secondary uppercase tracking-widest block mb-4">International Alliance</span>
+<h1 class="font-display-lg text-display-lg md:text-display-lg text-primary-container mb-6">Global Institutional Network</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-[720px] mx-auto leading-relaxed">
+                    Fostering a world-class ecosystem for international research collaboration. We bridge the gap between academia, industry, and government to accelerate scientific breakthroughs and institutional excellence across continents.
+                </p>
+</div>
+</section>
+<!-- Search & Filter Controls -->
+<section class="py-stack-lg sticky top-20 bg-background/95 backdrop-blur-sm z-40">
+<div class="flex flex-col md:flex-row gap-gutter items-center justify-between">
+<div class="relative w-full md:w-1/3">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface border border-outline-variant focus:border-primary focus:ring-0 rounded-lg text-body-md outline-none transition-all" placeholder="Search institutions by name, country, or discipline..." type="text"/>
+</div>
+<div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 no-scrollbar">
+<button class="px-5 py-2 rounded-full border border-primary bg-primary text-on-primary text-body-sm whitespace-nowrap transition-all">All Entities</button>
+<button class="px-5 py-2 rounded-full border border-outline-variant text-on-surface-variant hover:border-secondary hover:text-secondary text-body-sm whitespace-nowrap transition-all">University</button>
+<button class="px-5 py-2 rounded-full border border-outline-variant text-on-surface-variant hover:border-secondary hover:text-secondary text-body-sm whitespace-nowrap transition-all">Research Center</button>
+<button class="px-5 py-2 rounded-full border border-outline-variant text-on-surface-variant hover:border-secondary hover:text-secondary text-body-sm whitespace-nowrap transition-all">Government Body</button>
+</div>
+</div>
+</section>
+<!-- Partners Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-stack-lg">
+<!-- Card 1: MIT -->
+<div class="bg-white academic-border p-6 academic-hover ambient-lift transition-all flex flex-col h-full group">
+<div class="flex justify-between items-start mb-6">
+<div class="w-16 h-16 bg-surface-container rounded-lg flex items-center justify-center">
+<img class="w-12 h-12 object-contain" data-alt="A minimalist architectural logo representing a prestigious technological university, rendered in a professional slate gray and deep navy blue. The design is clean and geometric, set against a pristine white studio background with soft ambient lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVRvDdhcm7LEswFYR7gDqzMPfh0sQjKTep8p-vLYsTjZs9MEKfmM6w_aaZSGiM0TVXJYZNshxUfCKycILETNs6hwDFM5IURYziMO4pZmV7QW4JHUfxHh9nkthTliIpUH2OtCI9jJckazHur1uYE1rY6sIrchzHH4IvBDqMHG6v-loN2Ro-xzF2hibXjnWC1rOCotmM7LHRQ3MsztUaRmZUFmUmKtgDv2M66A-KhnekUT6ajGeTM3I"/>
+</div>
+<span class="font-code-sm text-code-sm text-secondary bg-secondary-container/20 px-2 py-1 rounded">Tier I Affiliate</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-primary mb-1 group-hover:text-secondary transition-colors">Massachusetts Institute of Technology (MIT)</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6 flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">location_on</span> Cambridge, Massachusetts, USA
+                </p>
+<div class="mt-auto">
+<p class="font-label-caps text-label-caps text-outline uppercase mb-2">Research Focus</p>
+<div class="flex flex-wrap gap-2">
+<span class="bg-surface-container-low px-3 py-1 text-body-sm rounded">Quantum Computing</span>
+<span class="bg-surface-container-low px-3 py-1 text-body-sm rounded">Robotics</span>
+</div>
+</div>
+</div>
+<!-- Card 2: Harvard -->
+<div class="bg-white academic-border p-6 academic-hover ambient-lift transition-all flex flex-col h-full group">
+<div class="flex justify-between items-start mb-6">
+<div class="w-16 h-16 bg-surface-container rounded-lg flex items-center justify-center">
+<img class="w-12 h-12 object-contain" data-alt="An elegant, classic institutional crest for a historical Ivy League university. The emblem features traditional heraldic elements with a modern minimalist twist, using a color palette of deep crimson and gold leaf accents on a clean white background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNICGVEnn0u93oMt7yrURBXAm5IyU0T0ee1Uv4KwWUBJ67c6fscs9VOV4OiJxqtqMUQrxiC_ruz5wBsHaVZO7moLL4lzs-oFTI9X0Qa__ijODR8aqCGAn6ezmA4GfG8msY4IBn6jByOmokIbjqI-ZjkgOjqs1a29EKCHV71eU9mWFfDi_uo8nqBvYQvkUZa01_2xFBc1XF3tf5U3PfoEeKWAqlXzElFxx_59O9FO71WXDxpUKsTg4"/>
+</div>
+<span class="font-code-sm text-code-sm text-secondary bg-secondary-container/20 px-2 py-1 rounded">Strategic Partner</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-primary mb-1 group-hover:text-secondary transition-colors">Harvard University</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6 flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">location_on</span> Cambridge, Massachusetts, USA
+                </p>
+<div class="mt-auto">
+<p class="font-label-caps text-label-caps text-outline uppercase mb-2">Research Focus</p>
+<div class="flex flex-wrap gap-2">
+<span class="bg-surface-container-low px-3 py-1 text-body-sm rounded">Genomics</span>
+<span class="bg-surface-container-low px-3 py-1 text-body-sm rounded">Global Policy</span>
+</div>
+</div>
+</div>
+<!-- Card 3: Univ Zurich -->
+<div class="bg-white academic-border p-6 academic-hover ambient-lift transition-all flex flex-col h-full group">
+<div class="flex justify-between items-start mb-6">
+<div class="w-16 h-16 bg-surface-container rounded-lg flex items-center justify-center">
+<img class="w-12 h-12 object-contain" data-alt="A modern, high-precision logo for a leading European research university. The symbol uses clean typography and a sleek abstract icon representing connectivity and European scientific heritage, styled in navy and steel-blue tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSzTbYItVCVEes4-uLhxo5nu4B0KK-lou_XQElT-61LY4mWR-jYZee3YQYWwcNr0AF9ZljDAmI3MweKCHiQwqe-pUZMrBgDhOP_4TSSy-ui0UhjvrSb8bAddQS8qh8LgU0tBjpxXigCVgJnYvktWBJTtugoc5f8_82L0kVOyI_QBLlOBgzutlfCedggfH66QT3UYcAe36Q2673Sntl1zn64gYUzZ9a3eC0QzBUPWzEBmL7kBIGesA"/>
+</div>
+<span class="font-code-sm text-code-sm text-secondary bg-secondary-container/20 px-2 py-1 rounded">EU Network</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-primary mb-1 group-hover:text-secondary transition-colors">University of Zurich</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6 flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">location_on</span> Zurich, Switzerland
+                </p>
+<div class="mt-auto">
+<p class="font-label-caps text-label-caps text-outline uppercase mb-2">Research Focus</p>
+<div class="flex flex-wrap gap-2">
+<span class="bg-surface-container-low px-3 py-1 text-body-sm rounded">Neuroscience</span>
+<span class="bg-surface-container-low px-3 py-1 text-body-sm rounded">Finance</span>
+</div>
+</div>
+</div>
+<!-- Card 4: ETH Zurich -->
+<div class="bg-white academic-border p-6 academic-hover ambient-lift transition-all flex flex-col h-full group">
+<div class="flex justify-between items-start mb-6">
+<div class="w-16 h-16 bg-surface-container rounded-lg flex items-center justify-center">
+<img class="w-12 h-12 object-contain" data-alt="A bold, technical monogram for a world-renowned engineering school. The visual language is sharp and structural, employing high contrast blacks and whites with a subtle teal accent, emphasizing precision and engineering excellence." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYmX8SmROEApgGwDe-xVcRuKps8oxEewx3Zix8z2HChATYUbDFAjr9yLhcYQtkRTf25XkpeHZKaC7Dl7Knx8s3aW7_Cak-Dx6NyLx1ijJPzm_ffqA0429aGwxKJYNV9SrYoqE_a1s6ZHNc2oPYjq_o5nes3_xyDpNW15bhHK3KW1eDigUo-9pukbjVdQq7PqCEXLGxKte9oGWhSqIEenyudb1emKEePF0CVC3AUQc_bhGmbxrT2IM"/>
+</div>
+<span class="font-code-sm text-code-sm text-secondary bg-secondary-container/20 px-2 py-1 rounded">Tier I Affiliate</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-primary mb-1 group-hover:text-secondary transition-colors">ETH Zurich</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6 flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">location_on</span> Zurich, Switzerland
+                </p>
+<div class="mt-auto">
+<p class="font-label-caps text-label-caps text-outline uppercase mb-2">Research Focus</p>
+<div class="flex flex-wrap gap-2">
+<span class="bg-surface-container-low px-3 py-1 text-body-sm rounded">Architecture</span>
+<span class="bg-surface-container-low px-3 py-1 text-body-sm rounded">Climate Systems</span>
+</div>
+</div>
+</div>
+<!-- Card 5: Stanford -->
+<div class="bg-white academic-border p-6 academic-hover ambient-lift transition-all flex flex-col h-full group">
+<div class="flex justify-between items-start mb-6">
+<div class="w-16 h-16 bg-surface-container rounded-lg flex items-center justify-center">
+<img class="w-12 h-12 object-contain" data-alt="A sophisticated seal design for a premier Silicon Valley research institution. The art features an iconic tree silhouette within a classic academic roundel, colored in rich cardinal red and warm sepia, conveying tradition and innovation." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCU_HVRj-3-MG0TfMd3pXzJnZ8FMckoRgXcW7yMeVk7tl6ncczXCOiZfe4UfKDBqxoiaKrdOqSwaBmwUXl7aAnnCoPd-nNRTZuYYQKJgkMJivcpE4fqRS3PgMHMJ8de6wv-l5KW_MCYOWDxH0--esrl9ErmXIS9hOu6TBzGfZC7-rS-fZ-nOen4tZESXAZJ3q2x2QmA3y6ZxEQFc3B7qVQwciZEdHt-7sDL_L3BEtSPdchToBATz7U"/>
+</div>
+<span class="font-code-sm text-code-sm text-secondary bg-secondary-container/20 px-2 py-1 rounded">Strategic Partner</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-primary mb-1 group-hover:text-secondary transition-colors">Stanford University</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6 flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">location_on</span> Stanford, California, USA
+                </p>
+<div class="mt-auto">
+<p class="font-label-caps text-label-caps text-outline uppercase mb-2">Research Focus</p>
+<div class="flex flex-wrap gap-2">
+<span class="bg-surface-container-low px-3 py-1 text-body-sm rounded">Artificial Intelligence</span>
+<span class="bg-surface-container-low px-3 py-1 text-body-sm rounded">Sustainability</span>
+</div>
+</div>
+</div>
+<!-- Card 6: Nazarbayev Univ -->
+<div class="bg-white academic-border p-6 academic-hover ambient-lift transition-all flex flex-col h-full group">
+<div class="flex justify-between items-start mb-6">
+<div class="w-16 h-16 bg-surface-container rounded-lg flex items-center justify-center">
+<img class="w-12 h-12 object-contain" data-alt="A contemporary institutional brand logo for a rising Central Asian university. The design incorporates elegant geometric patterns inspired by regional art, combined with sharp modern serifs in professional gold and navy blue." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3v1YhAZoOUu8HNdmD1X4k7UfuICLnwA5EEzl3Zdady3dCZmNqpT8Uum6Wa2qgzjvneDH13PBWeTijMtAC287V7EG0nzvPV_NgCFNUEtTDOEbJwLs_oyxJolTzgBPNkBnhrOWgiF28xy6mr7QJnWz-mN-xojK9HZmzLkYbOCMQO108z8KLQSMEmk2MfaZRhBsHkMsSXNunMk8qoJ6iUud_Qy1CwJiaXyfUTij9ZsrmRQ-izNAzQwA"/>
+</div>
+<span class="font-code-sm text-code-sm text-secondary bg-secondary-container/20 px-2 py-1 rounded">Emerging Partner</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-primary mb-1 group-hover:text-secondary transition-colors">Nazarbayev University</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6 flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">location_on</span> Astana, Kazakhstan
+                </p>
+<div class="mt-auto">
+<p class="font-label-caps text-label-caps text-outline uppercase mb-2">Research Focus</p>
+<div class="flex flex-wrap gap-2">
+<span class="bg-surface-container-low px-3 py-1 text-body-sm rounded">Energy Materials</span>
+<span class="bg-surface-container-low px-3 py-1 text-body-sm rounded">Eurasian Studies</span>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA Section: Become a Partner -->
+<section class="mt-stack-xl relative overflow-hidden bg-primary-container rounded-xl p-stack-lg md:p-stack-xl flex flex-col md:flex-row items-center gap-stack-lg">
+<!-- Background Decorative Element (Shader Placeholder) -->
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+
+</div>
+<div class="relative z-10 flex-1">
+<h2 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-primary mb-4">Extend Your Reach</h2>
+<p class="font-body-md text-body-md text-on-primary-container max-w-[500px]">
+                    Join an elite network of institutional partners dedicated to advancing human knowledge. Gain access to joint funding, collaborative labs, and global talent pipelines.
+                </p>
+</div>
+<div class="relative z-10 flex flex-col gap-4 w-full md:w-auto">
+<button class="bg-on-primary text-primary px-10 py-4 rounded-lg font-title-lg hover:bg-surface transition-colors whitespace-nowrap">
+                    Partner with Us
+                </button>
+<a class="text-on-primary text-center font-body-sm underline hover:text-on-primary-container transition-colors" href="#">Download Partnership Brochure</a>
+</div>
+</section>
+<!-- Institutional Trust Badges (Horizontal Scroll for Mobile) -->
+<section class="mt-stack-xl py-stack-md border-t border-b border-outline-variant">
+<p class="font-label-caps text-label-caps text-center text-outline uppercase mb-8">Our Governance Partners</p>
+<div class="flex justify-center md:justify-between items-center gap-12 grayscale opacity-40 hover:grayscale-0 transition-all overflow-x-auto no-scrollbar">
+<img class="h-8 w-auto" data-alt="A stylized professional logo of an international research council, featuring circular and interconnected geometric nodes. Styled in a minimalist gray for an academic footer context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvw5T0_cm41Bqmd62GMyRJwNEwEbeEnGiFSH2qDUXUj5L4m5eTCwMf6d1Yx5KhQsT4v4_x4Hk1jF7ym5Bm5DuFq4qMIPXew6_kWZMVAyJ_P7NjXBeawctMBiq6Rel3_kcgOoxiLjrbeU70w1cgpEyaDGbtU7D150HBl1VVxIoIThpX_S-0V3gTl3Dfms4Xnexv-s7aWmSK2Lw8UazHN0mjWp6QBFzJ6PohafvxHcdt78tPjO5VtOA"/>
+<img class="h-8 w-auto" data-alt="A clean, typographic logo of a global science foundation, emphasizing bold sans-serif lettering and a small globe icon. Minimalist and corporate in style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWElpBIq2EQ5_UlrDRRUPmF4PMUx9rzh1EBzk5RSEcC6umXnSd_ehoTi9qQ0mGNkaICeSFoLMtXCCxLvJVw7rFqpB5pDAlvjdgTDK5F4eCe6HG-kQpRD1gZPZhm6NXa-j4Psfs8EYfLv2JRd1yGS7JIgS43HspdpocGr4lU-MDk1_-BVtHcE52PjdL8JE1g84U5pZff3-KL9IEzX7LtvZDdPeTB0N-wxkEclMkpgEmLHCt4CjHXjc"/>
+<img class="h-8 w-auto" data-alt="A professional emblem representing a coalition of global universities, utilizing a shield motif and thin technical lines. Sophisticated and high-end aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXvwjgh4-CRzVub0k2eeV6dNQ0H5DBTMHNpQX-Zlp9EIYmQ1ZDe_mPTl-IHJJkxGUe9Myg_57_M3NPOiem6IvthSuT5vP3fxigDd3XaQxKkAAQrzoc4LWAwroh8BSGImRNJW_3_lF9czLueZzL-F_DGwZcYhM7mDCKjcvhEOa347PReFHEyM-f3rGmhxevklpv2B3vvhUME6sCap03XIDPMMQ8_LgIZzVUf3Vln4OjI2x1Irxlh5A"/>
+<img class="h-8 w-auto" data-alt="A minimalist logo for a world health research organization, combining a medical cross with digital data bars. Precision-focused and authoritative." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAroXsAKcmiq1nFt7Fi3H-TPZGeZKZZim_Ll1ebs4nQ6krU6EIWmW-Eanw2Y6btREr1VqsevCY3J8jC12mEa4GDGov0Vwdl0JJhjAohs6B34Z-KhyPqu0jY2kuQIbxrXRpQJqQsAbYMvIcyGu2wIpoaovQAiF9ffuJIzrZx7oXo6UYqTH2I12jaOcy6M4FOsGL_OK7KMQZzQXhp4PCfg91I2NhfH5r2ryRm9D0Qk4tf4BYDs211nIo"/>
+<img class="h-8 w-auto" data-alt="A high-tech logo for an aerospace research consortium, featuring a streamlined wing-like shape and modern italics. Sleek and scientific." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVS2361hc6gqiA3Hw-5vyTRP1H48jspSv_zfuzVMMSKKg24J3yts1fU5ERs71sm1h8J6EJje89vb8-OjqKqGpFhwZNulKnWcERw43qu2iFgzgfeVC0NmdTUa6yPOR-3VTtDe96JjH_PmgHIttQoBMpih2NnR0Nv5i_zeNiv_DvBX-tfocu--jli4dnUWieDXbnupnliXjuEq6C2-uf1phdCEHfxqL-r8kMcaohO7f5H4uZuk4O2w4"/>
+</div>
+</section>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="bg-primary dark:bg-primary-container text-on-primary dark:text-on-primary-container w-full mt-stack-xl">
+<div class="w-full py-stack-lg px-gutter flex flex-col md:flex-row justify-between items-center max-w-container-max mx-auto border-t border-on-primary/10">
+<div class="font-display-lg text-display-lg text-on-primary mb-8 md:mb-0">
+                Global Research Hub
+            </div>
+<div class="flex flex-wrap justify-center gap-x-8 gap-y-4 mb-8 md:mb-0">
+<a class="text-body-sm font-body-sm text-on-primary/70 dark:text-on-primary-container/70 hover:text-on-primary dark:hover:text-on-primary-container underline transition-all duration-200" href="#">Ethics Statement</a>
+<a class="text-body-sm font-body-sm text-on-primary/70 dark:text-on-primary-container/70 hover:text-on-primary dark:hover:text-on-primary-container underline transition-all duration-200" href="#">Privacy Policy</a>
+<a class="text-body-sm font-body-sm text-on-primary/70 dark:text-on-primary-container/70 hover:text-on-primary dark:hover:text-on-primary-container underline transition-all duration-200" href="#">Terms of Service</a>
+<a class="text-body-sm font-body-sm text-on-primary/70 dark:text-on-primary-container/70 hover:text-on-primary dark:hover:text-on-primary-container underline transition-all duration-200" href="#">Contact Support</a>
+<a class="text-body-sm font-body-sm text-on-primary/70 dark:text-on-primary-container/70 hover:text-on-primary dark:hover:text-on-primary-container underline transition-all duration-200" href="#">Institutional Access</a>
+</div>
+<div class="text-body-sm font-body-sm text-on-primary/50 text-center md:text-right">
+                © 2024 Global Research Publishing House. All rights reserved.
+            </div>
+</div>
+</footer>
+<script>
+        // Micro-interaction for filter buttons
+        const filterBtns = document.querySelectorAll('button.rounded-full');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => {
+                    b.classList.remove('bg-primary', 'text-on-primary', 'border-primary');
+                    b.classList.add('border-outline-variant', 'text-on-surface-variant');
+                });
+                btn.classList.add('bg-primary', 'text-on-primary', 'border-primary');
+                btn.classList.remove('border-outline-variant', 'text-on-surface-variant');
+            });
+        });
+
+        // Search highlight effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('scale-[1.01]');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('scale-[1.01]');
+        });
+    </script>
+</body></html>

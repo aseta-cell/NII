@@ -1,0 +1,306 @@
+<?php
+
+require_once "config.php";
+
+if (!isset($_SESSION["user_id"])) {
+    header("Location: signin.php");
+    exit();
+}
+
+$user_id = $_SESSION["user_id"];
+
+$stmt = $conn->prepare("SELECT * FROM users WHERE id=?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+
+$user = $stmt->get_result()->fetch_assoc();
+
+?>
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Author Dashboard | Academia Institute</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Playfair+Display:wght@600;700&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#b97958",
+                        "surface-container-high": "#dce9ff",
+                        "on-tertiary-fixed-variant": "#6c391d",
+                        "surface": "#f8f9ff",
+                        "inverse-surface": "#213145",
+                        "surface-variant": "#d3e4fe",
+                        "surface-bright": "#f8f9ff",
+                        "surface-container": "#e5eeff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#001b3d",
+                        "error": "#ba1a1a",
+                        "primary-container": "#002147",
+                        "on-secondary-fixed-variant": "#2a486e",
+                        "tertiary-container": "#3d1500",
+                        "primary-fixed": "#d6e3ff",
+                        "secondary-fixed": "#d3e3ff",
+                        "outline": "#74777f",
+                        "tertiary": "#180500",
+                        "secondary": "#426087",
+                        "on-primary": "#ffffff",
+                        "surface-tint": "#465f88",
+                        "secondary-fixed-dim": "#abc8f5",
+                        "on-surface-variant": "#44474e",
+                        "on-primary-container": "#708ab5",
+                        "on-error-container": "#93000a",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#3c5980",
+                        "surface-container-highest": "#d3e4fe",
+                        "inverse-on-surface": "#eaf1ff",
+                        "tertiary-fixed": "#ffdbcb",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#aec7f6",
+                        "background": "#f8f9ff",
+                        "on-primary-fixed-variant": "#2d476f",
+                        "on-error": "#ffffff",
+                        "on-background": "#0b1c30",
+                        "surface-container-low": "#eff4ff",
+                        "tertiary-fixed-dim": "#ffb691",
+                        "inverse-primary": "#aec7f6",
+                        "surface-dim": "#cbdbf5",
+                        "on-secondary-fixed": "#001c39",
+                        "on-tertiary-fixed": "#341100",
+                        "primary": "#000a1e",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#c4c6cf",
+                        "on-surface": "#0b1c30",
+                        "secondary-container": "#b3d1fe"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "stack-xl": "64px",
+                        "stack-md": "16px",
+                        "stack-lg": "32px",
+                        "margin-desktop": "64px",
+                        "container-max": "1200px",
+                        "gutter": "24px",
+                        "stack-sm": "8px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "code-sm": ["JetBrains Mono"],
+                        "body-sm": ["Inter"],
+                        "headline-md": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "body-md": ["Inter"],
+                        "display-lg-mobile": ["Playfair Display"],
+                        "title-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "code-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-sm": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                        "headline-md": ["30px", {"lineHeight": "38px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+                        "display-lg-mobile": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { background-color: #fbfbfc; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .paper-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            transition: border-color 0.2s ease;
+        }
+        .paper-card:hover {
+            border-color: #426087;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d3e4fe; border-radius: 10px; }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+
+
+<!-- TopNavBar -->
+<header class="bg-surface border-b border-outline-variant h-20 fixed top-0 left-0 w-full z-50">
+<div class="flex justify-between items-center w-full px-margin-desktop max-w-container-max mx-auto h-full">
+<div class="text-title-lg font-title-lg font-bold text-primary">Academia Institute</div>
+<nav class="hidden md:flex items-center gap-stack-lg">
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="about.html">About</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="journals.html">Journals</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="publish.html">Publish</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="authors.html" >Authors</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="reviewers.html">Reviewers</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="archive.html">Archive</a>
+</nav>
+<div class="flex items-center gap-stack-md">
+<a href="search.html" class="material-symbols-outlined text-primary">
+    search
+</a><a href="dashboard.php" class="flex items-center gap-stack-sm cursor-pointer border-l border-outline-variant pl-stack-md">
+    <span class="material-symbols-outlined text-primary text-3xl">
+        account_circle
+    </span>
+    <span class="hidden lg:block text-label-caps font-label-caps">
+        ******* Your name 
+    </span>
+</a>
+</div>
+</div>
+</header>
+
+
+<!-- SideNavBar -->
+<aside class="bg-surface-container-low border-r border-outline-variant h-screen w-64 fixed left-0 top-0 pt-24 hidden md:flex flex-col gap-stack-md py-stack-lg">
+<div class="px-6 mb-stack-md">
+<h2 class="text-title-lg font-title-lg font-bold text-primary">Personal Cabinet</h2>
+<p class="text-body-sm font-body-sm text-secondary opacity-80">Author ID:*******</p>
+</div>
+<nav class="flex flex-col">
+<a href="dashboard.html" class="flex items-center gap-4 py-3 text-primary font-bold border-l-4 border-primary pl-4 scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-label-caps font-label-caps">Overview</span>
+</a><a href="my-submissions.html" class="flex items-center gap-4 py-3 text-on-secondary-container px-4 hover:bg-surface-variant transition-all duration-150">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+<span class="text-label-caps font-label-caps">My Submissions</span>
+</a>
+<a href="reviewers.html" class="flex items-center gap-4 py-3 text-on-secondary-container px-4 hover:bg-surface-variant transition-all duration-150">
+<span class="material-symbols-outlined" data-icon="reviews">reviews</span>
+<span class="text-label-caps font-label-caps">Peer Reviews</span>
+</a><a href="billing.html" class="flex items-center gap-4 py-3 text-on-secondary-container px-4 hover:bg-surface-variant transition-all duration-150">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="text-label-caps font-label-caps">Billing</span>
+</a><a href="account-settings.html" class="flex items-center gap-4 py-3 text-on-secondary-container px-4 hover:bg-surface-variant transition-all duration-150">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-label-caps font-label-caps">Account Settings</span>
+</nav>
+</aside>
+<!-- Main Content -->
+<main class="ml-64 pt-24 px-margin-desktop max-w-container-max mx-auto">
+<form action="save_profile.php" method="POST">
+<button
+type="submit"
+class="bg-secondary text-white px-6 py-3 rounded">
+Save Changes
+</button>
+
+</form>
+<section class="mb-stack-xl">
+
+<h1 class="text-display-lg-mobile md:text-display-lg font-display-lg text-primary mb-stack-md">
+Account Settings
+</h1>
+
+<p class="text-body-md text-on-surface-variant mb-stack-lg">
+Manage your personal information, security settings, and account preferences.
+</p>
+
+
+<div class="bg-surface border border-outline-variant p-6 rounded">
+
+<h2 class="text-title-lg font-title-lg text-primary mb-4">
+Profile Information
+</h2>
+
+
+<div class="grid md:grid-cols-2 gap-6">
+
+<div>
+<label class="text-label-caps text-on-surface-variant">
+FULL NAME
+</label>
+
+<input
+class="w-full mt-2 border border-outline-variant p-3 rounded"
+type="text"
+name="fullname"
+value="<?php echo htmlspecialchars($user['fullname']); ?>">
+</div>
+
+
+<div>
+<label class="text-label-caps text-on-surface-variant">
+EMAIL
+</label>
+
+<input
+class="w-full mt-2 border border-outline-variant p-3 rounded"
+type="email"
+name="email"
+value="<?php echo htmlspecialchars($user['email']); ?>">
+</div>
+
+
+<div>
+<label class="text-label-caps text-on-surface-variant">
+AFFILIATION
+</label><input
+class="w-full mt-2 border border-outline-variant p-3 rounded"
+type="text"
+name="affiliation"
+value="<?php echo htmlspecialchars($user['affiliation']); ?>">
+</div>
+<div class="md:col-span-2">
+
+<label class="text-label-caps text-on-surface-variant">
+RESEARCH INTERESTS
+</label>
+
+<textarea
+class="w-full mt-2 border border-outline-variant p-3 rounded"
+name="research_interests"
+rows="5"><?php echo htmlspecialchars($user['research_interests']); ?></textarea>
+</div>
+
+<input 
+class="w-full mt-2 border border-outline-variant p-3 rounded"
+value="*******">
+</div>
+
+
+</div>
+
+</div>
+
+
+<div class="bg-surface border border-outline-variant p-6 rounded mt-stack-lg">
+
+<h2 class="text-title-lg font-title-lg text-primary mb-4">
+Security
+</h2>
+
+<button class="bg-primary text-white px-6 py-3 rounded">
+Change Password
+</button>
+
+</div>
+
+
+
+</section>
+</form>
+</main>

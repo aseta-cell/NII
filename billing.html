@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Billing | Academia Institute</title>
+
+
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet"/>
+
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+
+</head>
+
+
+<body class="bg-[#f8f9ff] text-[#0b1c30] font-sans">
+
+
+<!-- Header -->
+
+<header class="h-20 bg-white border-b fixed top-0 w-full z-50">
+
+<div class="flex justify-between items-center px-16 h-full">
+
+<div class="text-xl font-bold">
+Academia Institute
+</div>
+
+
+<div class="flex items-center gap-3">
+
+<span class="material-symbols-outlined text-3xl">
+account_circle
+</span>
+
+<span>
+Your Name
+</span>
+
+</div>
+
+</div>
+
+</header>
+
+
+
+<!-- Sidebar -->
+
+
+<aside class="fixed top-20 left-0 w-64 h-full bg-[#eff4ff] border-r p-6">
+
+
+<h2 class="font-bold text-lg mb-6">
+Personal Cabinet
+</h2>
+
+
+<nav class="flex flex-col gap-3">
+
+
+<a href="dashboard.html"
+class="p-3 hover:bg-white rounded">
+Dashboard
+</a>
+
+
+<a href="my-submissions.html"
+class="p-3 hover:bg-white rounded">
+My Submissions
+</a>
+
+
+<a href="reviewers.html"
+class="p-3 hover:bg-white rounded">
+Peer Reviews
+</a>
+
+
+<a href="billing.html"
+class="p-3 bg-white rounded font-bold">
+Billing
+</a>
+
+
+<a href="account-settings.html"
+class="p-3 hover:bg-white rounded">
+Account Settings
+</a>
+
+
+</nav>
+
+
+</aside>
+
+
+
+
+
+<!-- Main -->
+
+
+<main class="ml-64 pt-28 px-16">
+
+
+<h1 class="text-4xl font-bold mb-3">
+
+Billing & Payments
+
+</h1>
+
+
+<p class="text-gray-600 mb-10">
+
+Manage publication fees, invoices and payment history.
+
+</p>
+
+
+
+
+
+<!-- Current Balance -->
+
+
+<div class="grid md:grid-cols-3 gap-6">
+
+
+
+<div class="bg-white border rounded-lg p-6">
+
+<p class="text-sm uppercase text-gray-500">
+Current Balance
+</p>
+
+
+<h2 class="text-3xl font-bold mt-3">
+
+$250
+
+</h2>
+
+
+<p class="text-sm text-gray-500 mt-2">
+
+Article Processing Charge
+
+</p>
+
+</div>
+
+
+
+
+
+<div class="bg-white border rounded-lg p-6">
+
+
+<p class="text-sm uppercase text-gray-500">
+
+Payment Status
+
+</p>
+
+
+<h2 class="text-xl font-bold mt-3 text-green-700">
+
+Paid
+
+</h2>
+
+
+<p class="text-sm text-gray-500 mt-2">
+
+Invoice #AI-2024-00125
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+<div class="bg-white border rounded-lg p-6">
+
+
+<p class="text-sm uppercase text-gray-500">
+
+Next Payment
+
+</p>
+
+
+<h2 class="text-xl font-bold mt-3">
+
+$300
+
+</h2>
+
+
+<p class="text-sm text-gray-500 mt-2">
+
+For accepted manuscript
+
+</p>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<!-- Payment Card -->
+
+
+<section class="bg-white border rounded-lg p-8 mt-10">
+
+
+<h2 class="text-xl font-bold mb-6">
+
+Make a Payment
+
+</h2>
+
+
+
+
+<div class="grid md:grid-cols-2 gap-6">
+
+
+<div>
+
+<label class="text-sm uppercase">
+Card Holder Name
+</label>
+
+
+<input
+class="w-full border p-3 rounded mt-2"
+placeholder="Your Name">
+
+
+</div>
+
+
+
+<div>
+
+<label class="text-sm uppercase">
+Card Number
+</label>
+
+
+<input
+class="w-full border p-3 rounded mt-2"
+placeholder="**** **** **** 1234">
+
+
+</div>
+
+
+
+<div>
+
+<label class="text-sm uppercase">
+Expiration Date
+</label>
+
+
+<input
+class="w-full border p-3 rounded mt-2"
+placeholder="MM/YY">
+
+
+</div>
+
+
+
+
+<div>
+
+<label class="text-sm uppercase">
+CVV
+</label>
+
+
+<input
+class="w-full border p-3 rounded mt-2"
+placeholder="***">
+
+
+</div>
+
+
+
+</div>
+
+
+
+<button
+class="mt-8 bg-[#000a1e] text-white px-8 py-3 rounded">
+
+Pay $300
+
+</button>
+
+
+
+</section>
+
+
+
+
+
+
+<!-- History -->
+
+
+<section class="bg-white border rounded-lg p-8 mt-10">
+
+
+<h2 class="text-xl font-bold mb-5">
+
+Payment History
+
+</h2>
+
+
+
+<table class="w-full">
+
+
+<thead>
+
+<tr class="border-b text-left">
+
+<th class="p-3">
+Invoice
+</th>
+
+
+<th class="p-3">
+Date
+</th>
+
+
+<th class="p-3">
+Amount
+</th>
+
+
+<th class="p-3">
+Status
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+<tbody>
+
+
+<tr class="border-b">
+
+
+<td class="p-3">
+#AI-2024-00125
+</td>
+
+
+<td class="p-3">
+12 Oct 2024
+</td>
+
+
+<td class="p-3">
+$250
+</td>
+
+
+<td class="p-3 text-green-700">
+Paid
+</td>
+
+
+</tr>
+
+
+
+
+<tr>
+
+
+<td class="p-3">
+#AI-2024-00130
+</td>
+
+
+<td class="p-3">
+20 Oct 2024
+</td>
+
+
+<td class="p-3">
+$300
+</td>
+
+
+<td class="p-3 text-orange-600">
+Pending
+</td>
+
+
+</tr>
+
+
+
+</tbody>
+
+
+</table>
+
+
+
+</section>
+
+
+
+</main>
+
+
+</body>
+
+</html>
