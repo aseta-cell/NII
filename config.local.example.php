@@ -25,5 +25,7 @@ return [
     // New special-access password (optional): put its hash here
     // "free_access_hash" => '$2y$12$...',
 
-    "payment_instructions" => "Kaspi Gold: +7 700 000 00 00 (Name S.)\nBank: ... IBAN: KZ...\nIn the transfer comment write your payment number.",
+    // Payment details are set in config.php (Kaspi / bank transfer to +7 771 473 18 52).
+    // To change them, uncomment and edit:
+    // "payment_instructions" => "Kaspi: +7 ...",
 ];

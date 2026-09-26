@@ -45,6 +45,15 @@ $settings = [
         "institutional" => ["name" => "Institutional", "amount" => null, "link" => "institutional.html"],
     ],
 
+    // Patent applications
+    "patent_fee" => 99,          // in "currency"; free for special-access accounts
+    "patent_prefix" => "NII-PAT", // application number: NII-PAT-2026-00001
+    "patent_types" => [
+        "invention"         => ["kz" => "Өнертабыс",             "ru" => "Изобретение",            "en" => "Invention"],
+        "utility_model"     => ["kz" => "Пайдалы модель",        "ru" => "Полезная модель",        "en" => "Utility model"],
+        "industrial_design" => ["kz" => "Өнеркәсіптік үлгі",     "ru" => "Промышленный образец",   "en" => "Industrial design"],
+    ],
+
     // Special (family) access: whoever enters this password gets everything free.
     // Only the bcrypt hash is stored here, never the password itself.
     // To change the password: php -r 'echo password_hash("NEW-PASSWORD", PASSWORD_DEFAULT);'
@@ -52,7 +61,7 @@ $settings = [
     "free_access_hash" => '$2y$12$J2VcUAsWmBzHJPknmMFAkOc1cZoC5R8ooUMjulpn/fhUu.B5yDjJi',
 
     // Shown to the author on the payment page (bank transfer / Kaspi)
-    "payment_instructions" => "Bank transfer details will be provided by the editorial office.",
+    "payment_instructions" => "Kaspi (Kaspi Gold / перевод по номеру): +7 771 473 18 52\nЛюбой банк Казахстана (Halyk, Freedom, Jusan, Forte и др.) — перевод по номеру телефона: +7 771 473 18 52\nСумма в долларах оплачивается в тенге по курсу на день оплаты.\nВ комментарии к переводу укажите номер платежа / заявки, затем загрузите чек ниже.\n\nKaspi / кез келген банк — телефон нөмірі бойынша аудару: +7 771 473 18 52\nPay by Kaspi or any Kazakhstan bank transfer to phone number +7 771 473 18 52 (in KZT at the current rate), then upload the receipt.",
 ];
 
 if (file_exists(__DIR__ . "/config.local.php")) {
@@ -178,6 +187,17 @@ function save_upload($field, array $allowed_ext, $max_mb = 20)
 
     if (!is_dir($dir)) {
         mkdir($dir, 0755, true);
+    }
+
+    // Uploaded files must never run as code (Apache; nginx is set up in DEPLOY.md)
+    if (!file_exists($dir . ".htaccess")) {
+        file_put_contents($dir . ".htaccess", implode("\n", [
+            '<FilesMatch "\\.(php|phtml|phar|php\\d|pl|py|cgi|sh)$">',
+            "    Require all denied",
+            "</FilesMatch>",
+            "Options -Indexes",
+            "",
+        ]));
     }
 
     $name = date("YmdHis") . "_" . bin2hex(random_bytes(6)) . "." . $ext;

@@ -40,7 +40,7 @@ nano config.local.php
 - `db_pass`: пароль из шага 3;
 - `site_url`: `https://nii-arai-publishhouse.kz`;
 - `reviewer_code` и `editor_code`: секретные коды для регистрации рецензентов и редакторов;
-- `payment_instructions`: реквизиты Kaspi или банка для оплаты;
+- реквизиты для оплаты уже прописаны: Kaspi и перевод из любого банка на номер **+7 771 473 18 52**. Поменять их можно в `payment_instructions`;
 - при желании валюту (`currency`) и цены (`plans`). По умолчанию цены как в таблице на странице About: Author $149, Professional $499, Institutional — «Contact».
 
 Затем выдай права на папку загрузок:
@@ -71,7 +71,7 @@ server {
     # Секретные файлы и git наружу не отдаём
     location ~ /\.git { deny all; }
     location ~ ^/(config\.local\.php|config\.local\.example\.php|database\.sql|DEPLOY\.md|README\.md|CNAME)$ { deny all; }
-    location ^~ /migrations/ { deny all; }
+    location ~ ^/migration-.*\.sql$ { deny all; }
 
     # Загруженные файлы никогда не выполняются как PHP
     location ^~ /uploads/ {
@@ -160,6 +160,27 @@ php -r 'echo password_hash("НОВЫЙ_ПАРОЛЬ", PASSWORD_DEFAULT);'
 
 Полученную строку впиши в `config.local.php` как `"free_access_hash" => '...'` (в одинарных кавычках).
 
+## Патенты
+
+Страница **Patents** (`patents.php`): подача заявок на изобретение, полезную модель или промышленный образец.
+
+1. Автор нажимает **New patent application** и заполняет форму:
+   - ФИО и ИИН;
+   - телефон, email, адрес;
+   - соавторов;
+   - название на казахском, русском и английском;
+   - реферат и файл описания.
+2. Заявке сразу присваивается номер вида `NII-PAT-2026-00001`.
+3. Пошлина **$99** (`patent_fee` в настройках). Автор переводит деньги по реквизитам и загружает чек.
+4. Редактор в кабинете → блок **Patent Applications** → **Confirm payment**. После этого статусы: Filed → Under Examination → Granted / Rejected.
+5. Кнопка **Open application document** открывает официальный документ:
+   - номер заявки и штрихкод;
+   - все поля на трёх языках.
+
+   Кнопка **Print / Save as PDF** печатает его или сохраняет в PDF. Пока пошлина не оплачена, на документе стоит «DRAFT».
+
+**Семейные аккаунты** (особый пароль) подают заявки бесплатно: заявка сразу получает статус Filed. Если пароль ввести позже, неоплаченные заявки тоже становятся бесплатными.
+
 ## Счётчики статьи
 
 На странице статьи и в архиве показываются настоящие **просмотры** (каждое открытие `article.php`) и **скачивания** (кнопка Download PDF).
@@ -173,7 +194,8 @@ cd /var/www/nii && git pull
 Если база была создана из старого `database.sql` (до особых аккаунтов и счётчиков), один раз выполни:
 
 ```bash
-mysql journal < migrations/001_free_access_and_metrics.sql
+mysql journal < migration-001-free-access.sql
+mysql journal < migration-002-patents.sql
 ```
 
 ## Резервная копия базы
