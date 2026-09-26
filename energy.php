@@ -1,11 +1,7 @@
-
 <?php
-
-session_start();
-
 require_once "config.php";
 
-$journal = "International Journal of Engineering & Applied Physics";
+$journal = $settings["journals"][basename(__FILE__)];
 
 $user_id = $_SESSION["user_id"] ?? null;
 
@@ -263,15 +259,15 @@ $view_count++;
 <div class="hidden md:flex gap-gutter items-center">
 <a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors duration-200 font-body-md text-body-md" href="about.html">About</a>
 <a class="text-primary dark:text-inverse-primary border-b-2 border-primary font-bold transition-colors duration-200 font-body-md text-body-md" href="#">Journals</a>
-<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors duration-200 font-body-md text-body-md" href="publish.html">Publish</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors duration-200 font-body-md text-body-md" href="publish.php">Publish</a>
 <a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors duration-200 font-body-md text-body-md" href="authors.html">Authors</a>
-<div class="flex items-center gap-stack-sm ml-stack-lg"><a href="dashboard.html">
+<div class="flex items-center gap-stack-sm ml-stack-lg"><a href="dashboard.php">
     <span class="material-symbols-outlined text-primary cursor-pointer hover:text-secondary transition-all">
         account_circle
     </span>
 </a>
 
-<a href="signin.html">
+<a href="signin.php">
     <button class="bg-primary-container text-on-primary-container px-6 py-2 rounded font-label-caps text-label-caps hover:opacity-80 transition-all cursor-pointer">
         Sign In
     </button>
@@ -315,7 +311,7 @@ $view_count++;
 </a>
 </nav>
 <div class="mt-auto px-4 pb-stack-lg">
-    <a href="my-submissions.html"
+    <a href="my-submissions.php"
        class="block w-full bg-primary text-on-primary py-3 px-4 rounded-lg font-label-caps text-label-caps hover:opacity-90 active:scale-95 transition-all text-center">
         Submit Manuscript
     </a>
@@ -347,7 +343,7 @@ $view_count++;
         <input
             type="hidden"
             name="journal"
-            value="<?= htmlspecialchars($journal) ?>"
+            value="<?= e($journal) ?>"
         >
 
         <button
@@ -420,7 +416,7 @@ $view_count++;
         <input
             type="hidden"
             name="journal"
-            value="<?= htmlspecialchars($journal) ?>"
+            value="<?= e($journal) ?>"
         >
 
         <button
@@ -483,7 +479,7 @@ $view_count++;
     <div class="flex flex-wrap gap-3 mb-6">
 
     <a
-        href="issue.php?journal=<?= urlencode($journal) ?>"
+        href="archive.php?journal=<?= urlencode($journal) ?>"
         class="bg-primary text-on-primary px-5 py-3 rounded-lg font-bold hover:opacity-90 transition-all flex items-center gap-2"
     >
 
@@ -497,7 +493,7 @@ $view_count++;
 
 
     <a
-        href="pdf/current-issue.pdf"
+        href="archive.php?journal=<?= urlencode($journal) ?>"
         target="_blank"
         class="border border-primary text-primary px-5 py-3 rounded-lg font-bold hover:bg-surface-container transition-all flex items-center gap-2"
     >
@@ -763,7 +759,7 @@ $view_count++;
             <input
                 type="hidden"
                 name="journal"
-                value="<?= htmlspecialchars($journal) ?>"
+                value="<?= e($journal) ?>"
             >
 
 
@@ -845,7 +841,7 @@ $view_count++;
                     <div class="flex justify-between">
 
                         <strong>
-                            <?= htmlspecialchars($comment["fullname"]) ?>
+                            <?= e($comment["fullname"]) ?>
                         </strong>
 
                         <span class="text-sm text-on-surface-variant">
@@ -863,7 +859,7 @@ $view_count++;
                     <p class="mt-2 text-on-surface-variant">
 
                         <?= nl2br(
-                            htmlspecialchars($comment["comment"])
+                            e($comment["comment"])
                         ) ?>
 
                     </p>

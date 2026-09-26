@@ -1,28 +1,21 @@
 <?php
 
-session_start();
 require_once "config.php";
 
-if($_SERVER["REQUEST_METHOD"]=="POST"){
+require_role("editor");
 
-    $submission = (int)$_POST["submission_id"];
-    $decision = $_POST["decision"];
+$allowed = ["Submitted", "Under Review", "Accepted", "Revision", "Rejected", "Published"];
 
-    $stmt = $conn->prepare("
-        UPDATE submissions
-        SET status=?
-        WHERE id=?
-    ");
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $stmt->bind_param(
-        "si",
-        $decision,
-        $submission
-    );
+    $submission = (int)($_POST["submission_id"] ?? 0);
+    $decision = $_POST["decision"] ?? "";
 
-    $stmt->execute();
-
+    if (in_array($decision, $allowed, true)) {
+        $stmt = $conn->prepare("UPDATE submissions SET status = ? WHERE id = ?");
+        $stmt->bind_param("si", $decision, $submission);
+        $stmt->execute();
+    }
 }
 
-header("Location: editor-dashboard.php");
-exit();
+redirect("editor-dashboard.php");

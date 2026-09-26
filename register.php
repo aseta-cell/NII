@@ -1,63 +1,78 @@
 <?php
-session_start();
 require_once "config.php";
 
 $message = "";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $fullname = trim($_POST["fullname"]);
-    $email = trim($_POST["email"]);
-    $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
-    $affiliation = trim($_POST["affiliation"]);
+    $fullname = trim($_POST["fullname"] ?? "");
+    $email = trim($_POST["email"] ?? "");
+    $plain_password = $_POST["password"] ?? "";
+    $affiliation = trim($_POST["affiliation"] ?? "");
 
     $role = $_POST["role"] ?? "author";
     $access_code = trim($_POST["access_code"] ?? "");
+    $special_code = $_POST["special_code"] ?? "";
 
-    // Проверка кодов доступа
-    if ($role == "reviewer" && $access_code != "NII2026REVIEW") {
+    if (!in_array($role, ["author", "reviewer", "editor"], true)) {
+        $role = "author";
+    }
+
+    if ($fullname === "" || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+
+        $message = "Please enter your name and a valid email.";
+
+    }
+    elseif (strlen($plain_password) < 6) {
+
+        $message = "Password must be at least 6 characters.";
+
+    }
+    // Staff roles need an access code from config
+    elseif ($role === "reviewer" && !hash_equals($settings["reviewer_code"], $access_code)) {
 
         $message = "Invalid reviewer access code.";
 
     }
-    elseif ($role == "editor" && $access_code != "NII2026EDIT") {
+    elseif ($role === "editor" && !hash_equals($settings["editor_code"], $access_code)) {
 
         $message = "Invalid editor access code.";
 
     }
+    elseif ($special_code !== "" && !is_free_access_code($special_code)) {
+
+        sleep(1); // slows down password guessing
+        $message = "Invalid special access password.";
+
+    }
     else {
 
-        // Проверяем, существует ли email
-        $check = $conn->prepare("SELECT id FROM users WHERE email=?");
+        // Check whether the email is already registered
+        $check = $conn->prepare("SELECT id FROM users WHERE email = ?");
         $check->bind_param("s", $email);
         $check->execute();
 
-        $result = $check->get_result();
-
-        if ($result->num_rows > 0) {
+        if ($check->get_result()->num_rows > 0) {
 
             $message = "This email is already registered.";
 
         }
         else {
 
-            // Создаем пользователя
+            $password = password_hash($plain_password, PASSWORD_DEFAULT);
+
+            $free_access = $special_code !== "" ? 1 : 0;
+
             $stmt = $conn->prepare("
-                INSERT INTO users
-                (fullname,email,password,affiliation,role)
-                VALUES (?,?,?,?,?)
+                INSERT INTO users (fullname, email, password, affiliation, role, free_access)
+                VALUES (?, ?, ?, ?, ?, ?)
             ");
 
-            $stmt->bind_param(
-                "sssss",
-                $fullname,
-                $email,
-                $password,
-                $affiliation,
-                $role
-            );
+            $stmt->bind_param("sssssi", $fullname, $email, $password, $affiliation, $role, $free_access);
 
             if ($stmt->execute()) {
+
+                session_regenerate_id(true);
 
                 $_SESSION["user_id"] = $conn->insert_id;
                 $_SESSION["fullname"] = $fullname;
@@ -65,21 +80,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION["role"] = $role;
 
                 switch ($role) {
-
                     case "editor":
-                        header("Location: editor-dashboard.php");
-                        break;
-
+                        redirect("editor-dashboard.php");
                     case "reviewer":
-                        header("Location: reviewer-dashboard.php");
-                        break;
-
+                        redirect("reviewer-dashboard.php");
                     default:
-                        header("Location: dashboard.php");
-                        break;
+                        redirect("dashboard.php");
                 }
-
-                exit();
 
             }
             else {
@@ -157,25 +164,28 @@ color:red;
 
 <h2>Create Account</h2>
 
-<?php echo "<p class='error'>$message</p>"; ?>
+<?php if ($message !== ""): ?><p class="error"><?= e($message) ?></p><?php endif; ?>
 <form method="POST">
 
 <input
 type="text"
 name="fullname"
+value="<?= e($_POST["fullname"] ?? "") ?>"
 placeholder="Full Name"
 required>
 
 <input
 type="email"
 name="email"
+value="<?= e($_POST["email"] ?? "") ?>"
 placeholder="Email"
 required>
 
 <input
 type="password"
 name="password"
-placeholder="Password"
+placeholder="Password (min. 6 characters)"
+minlength="6"
 required>
 
 <input
@@ -204,6 +214,15 @@ name="access_code"
 placeholder="Access code">
 
 </div>
+
+<details style="margin-bottom:20px;">
+<summary style="cursor:pointer;">I have a special access password</summary>
+<input
+type="password"
+name="special_code"
+placeholder="Special access password"
+autocomplete="off">
+</details>
 
 <button type="submit">
 
@@ -235,3 +254,13 @@ function checkRole(){
 checkRole();
 
 </script>
+
+<p style="margin-top:20px;">
+Already have an account? <a href="signin.php">Sign in</a>
+</p>
+
+</div>
+
+</body>
+
+</html>

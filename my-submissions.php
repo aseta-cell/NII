@@ -1,22 +1,24 @@
 <?php
 
 require_once "config.php";
-echo "<pre>";
-var_dump($_SESSION);
-echo "</pre>";
-exit();
-if (!isset($_SESSION["user_id"])) {
-    header("Location: signin.php");
-    exit();
-}
+
+require_login();
 
 $user_id = $_SESSION["user_id"];
 
-$sql = "SELECT * FROM articles
-        WHERE user_id = ?
-        ORDER BY created_at DESC";
-
-$stmt = $conn->prepare($sql);
+$stmt = $conn->prepare("
+    SELECT
+        submissions.*,
+        r.status AS review_status,
+        r.comments AS review_comment
+    FROM submissions
+    LEFT JOIN reviews r
+        ON r.id = (
+            SELECT MAX(id) FROM reviews WHERE reviews.submission_id = submissions.id
+        )
+    WHERE submissions.user_id = ?
+    ORDER BY submissions.created_at DESC
+");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 
@@ -160,13 +162,13 @@ $result = $stmt->get_result();
 <a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="journals.html">Journals</a>
 <a class="text-primary border-b-2 border-primary font-bold font-body-md" href="publish.php">Publish</a>
 <a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="authors.html">Authors</a>
-<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="reviewers.html">Reviewers</a>
-<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="archive.html">Archive</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="reviewers.php">Reviewers</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="archive.php">Archive</a>
 </div>
 </div>
  <div class="flex items-center gap-stack-md">
 
-            <a href="search.html" class="material-symbols-outlined hover:scale-110 transition">
+            <a href="archive.php" class="material-symbols-outlined hover:scale-110 transition">
                 search
             </a>
 
@@ -222,12 +224,19 @@ My Submissions
 <tr class="border-b">
 
     <td class="p-4">
-        <?= htmlspecialchars($row["title"]) ?>
+        <?= e($row["title"]) ?>
+        <div class="text-sm text-gray-500"><?= e($row["journal"]) ?></div>
+        <?php if (!empty($row["review_comment"])): ?>
+        <div class="mt-2 text-sm bg-gray-50 p-2 rounded">
+            <strong>Reviewer (<?= e($row["review_status"]) ?>):</strong>
+            <?= nl2br(e($row["review_comment"])) ?>
+        </div>
+        <?php endif; ?>
     </td>
 
     <td class="p-4 text-center">
         <span class="px-3 py-1 rounded bg-blue-100 text-blue-700">
-            <?= htmlspecialchars($row["status"]) ?>
+            <?= e($row["status"]) ?>
         </span>
     </td>
 
@@ -237,20 +246,27 @@ My Submissions
 
     <td class="p-4 text-center">
 
-        <?php if(!empty($row["file_name"])): ?>
+        <?php if(!empty($row["filename"])): ?>
 
             <a
-                href="uploads/<?= urlencode($row["file_name"]) ?>"
+                href="<?= e(upload_url($row["filename"])) ?>"
                 target="_blank"
                 class="text-blue-600 underline"
             >
-                View PDF
+                View file
             </a>
 
         <?php else: ?>
 
             —
 
+        <?php endif; ?>
+
+        <?php if ($row["status"] === "Accepted" || $row["status"] === "Payment Pending"): ?>
+            <br>
+            <a href="payment.php?id=<?= (int)$row["id"] ?>" class="text-blue-600 underline font-bold">
+                Pay fee
+            </a>
         <?php endif; ?>
 
     </td>

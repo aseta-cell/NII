@@ -1,210 +1,155 @@
 <?php
 
-session_start();
 require_once "config.php";
 
-
-// =====================================
-// CHECK LOGIN
-// =====================================
-
-if (!isset($_SESSION["user_id"])) {
-    header("Location: signin.php");
-    exit();
-}
-
-$user_id = $_SESSION["user_id"];
+$user = require_role("editor");
+$user_id = $user["id"];
 
 
 // =====================================
-// CHECK EDITOR ROLE
+// ACTIONS (all forms on this page post here)
 // =====================================
 
-$stmt = $conn->prepare("
-    SELECT role, fullname
-    FROM users
-    WHERE id = ?
-");
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
+    $submission_id = (int)($_POST["submission_id"] ?? 0);
+    $content_id = (int)($_POST["content_id"] ?? 0);
+    $payment_id = (int)($_POST["payment_id"] ?? 0);
 
-$user = $stmt->get_result()->fetch_assoc();
+    // Assign reviewer
+    if (isset($_POST["assign"])) {
 
-if (!$user || $user["role"] !== "editor") {
-    die("Access denied");
-}
+        $reviewer_id = (int)($_POST["reviewer_id"] ?? 0);
 
-
-// =====================================
-// ASSIGN REVIEWER
-// =====================================
-
-if (isset($_POST["assign"])) {
-
-    $submission_id = (int)$_POST["submission_id"];
-    $reviewer_id = (int)$_POST["reviewer_id"];
-
-    $stmt = $conn->prepare("
-        UPDATE submissions
-        SET reviewer_id = ?
-        WHERE id = ?
-    ");
-
-    $stmt->bind_param(
-        "ii",
-        $reviewer_id,
-        $submission_id
-    );
-
-    $stmt->execute();
-
-    header("Location: editor-dashboard.php");
-    exit();
-}
-
-
-// =====================================
-// PUBLISH ARTICLE
-// =====================================
-
-if (isset($_POST["publish"])) {
-
-    $submission_id = (int)$_POST["submission_id"];
-
-    $stmt = $conn->prepare("
-        UPDATE submissions
-        SET status = 'Published'
-        WHERE id = ?
-    ");
-
-    $stmt->bind_param(
-        "i",
-        $submission_id
-    );
-
-    $stmt->execute();
-
-    header("Location: editor-dashboard.php");
-    exit();
-}
-
-
-// =====================================
-// CREATE EDITORIAL CONTENT
-// =====================================
-
-if (isset($_POST["create_content"])) {
-
-    $type = trim($_POST["type"] ?? "");
-    $title = trim($_POST["title"] ?? "");
-    $description = trim($_POST["description"] ?? "");
-    $content = trim($_POST["content"] ?? "");
-    $media_url = trim($_POST["media_url"] ?? "");
-    $thumbnail_url = trim($_POST["thumbnail_url"] ?? "");
-    $status = $_POST["status"] ?? "Draft";
-
-    if ($type === "" || $title === "") {
-        die("Title and content type are required.");
+        $stmt = $conn->prepare("
+            UPDATE submissions
+            SET reviewer_id = ?, status = 'Under Review'
+            WHERE id = ?
+        ");
+        $stmt->bind_param("ii", $reviewer_id, $submission_id);
+        $stmt->execute();
     }
 
-    $published_at = null;
+    // Change status manually
+    if (isset($_POST["set_status"])) {
 
-    if ($status === "Published") {
-        $published_at = date("Y-m-d H:i:s");
+        $allowed = ["Submitted", "Under Review", "Accepted", "Revision", "Rejected", "Payment Pending", "Paid"];
+        $status = $_POST["status"] ?? "";
+
+        if (in_array($status, $allowed, true)) {
+            $stmt = $conn->prepare("UPDATE submissions SET status = ? WHERE id = ?");
+            $stmt->bind_param("si", $status, $submission_id);
+            $stmt->execute();
+        }
     }
 
-    $stmt = $conn->prepare("
-        INSERT INTO editorial_content
-        (
-            type,
-            title,
-            description,
-            content,
-            media_url,
-            thumbnail_url,
-            status,
-            author_id,
-            published_at
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ");
+    // Publish article (optionally with DOI)
+    if (isset($_POST["publish"])) {
 
-    $stmt->bind_param(
-        "sssssssis",
-        $type,
-        $title,
-        $description,
-        $content,
-        $media_url,
-        $thumbnail_url,
-        $status,
-        $user_id,
-        $published_at
-    );
+        $doi = trim($_POST["doi"] ?? "");
 
-    $stmt->execute();
+        $stmt = $conn->prepare("
+            UPDATE submissions
+            SET status = 'Published', doi = NULLIF(?, '')
+            WHERE id = ?
+        ");
+        $stmt->bind_param("si", $doi, $submission_id);
+        $stmt->execute();
+    }
 
-    header("Location: editor-dashboard.php");
-    exit();
+    // Confirm payment → article becomes Paid
+    if (isset($_POST["confirm_payment"])) {
+
+        $stmt = $conn->prepare("
+            UPDATE payments
+            SET status = 'Paid', paid_at = NOW()
+            WHERE id = ?
+        ");
+        $stmt->bind_param("i", $payment_id);
+        $stmt->execute();
+
+        $stmt = $conn->prepare("
+            UPDATE submissions
+            SET status = 'Paid'
+            WHERE id = (SELECT submission_id FROM payments WHERE id = ?)
+            AND status <> 'Published'
+        ");
+        $stmt->bind_param("i", $payment_id);
+        $stmt->execute();
+    }
+
+    // Reject payment → author can pay again
+    if (isset($_POST["reject_payment"])) {
+
+        $stmt = $conn->prepare("UPDATE payments SET status = 'Rejected' WHERE id = ?");
+        $stmt->bind_param("i", $payment_id);
+        $stmt->execute();
+
+        $stmt = $conn->prepare("
+            UPDATE submissions
+            SET status = 'Accepted'
+            WHERE id = (SELECT submission_id FROM payments WHERE id = ?)
+            AND status = 'Payment Pending'
+        ");
+        $stmt->bind_param("i", $payment_id);
+        $stmt->execute();
+    }
+
+    // Create website content
+    if (isset($_POST["create_content"])) {
+
+        $type = trim($_POST["type"] ?? "");
+        $title = trim($_POST["title"] ?? "");
+        $description = trim($_POST["description"] ?? "");
+        $content = trim($_POST["content"] ?? "");
+        $media_url = trim($_POST["media_url"] ?? "");
+        $thumbnail_url = trim($_POST["thumbnail_url"] ?? "");
+        $status = ($_POST["status"] ?? "") === "Published" ? "Published" : "Draft";
+
+        if ($type === "" || $title === "") {
+            die("Title and content type are required.");
+        }
+
+        $published_at = $status === "Published" ? date("Y-m-d H:i:s") : null;
+
+        $stmt = $conn->prepare("
+            INSERT INTO editorial_content
+            (type, title, description, content, media_url, thumbnail_url, status, author_id, published_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+        $stmt->bind_param(
+            "sssssssis",
+            $type, $title, $description, $content, $media_url, $thumbnail_url, $status, $user_id, $published_at
+        );
+        $stmt->execute();
+    }
+
+    // Publish website content
+    if (isset($_POST["publish_content"])) {
+
+        $stmt = $conn->prepare("
+            UPDATE editorial_content
+            SET status = 'Published', published_at = NOW()
+            WHERE id = ?
+        ");
+        $stmt->bind_param("i", $content_id);
+        $stmt->execute();
+    }
+
+    // Delete website content
+    if (isset($_POST["delete_content"])) {
+
+        $stmt = $conn->prepare("DELETE FROM editorial_content WHERE id = ?");
+        $stmt->bind_param("i", $content_id);
+        $stmt->execute();
+    }
+
+    redirect("editor-dashboard.php");
 }
 
 
 // =====================================
-// PUBLISH EDITORIAL CONTENT
-// =====================================
-
-if (isset($_POST["publish_content"])) {
-
-    $content_id = (int)$_POST["content_id"];
-
-    $stmt = $conn->prepare("
-        UPDATE editorial_content
-        SET
-            status = 'Published',
-            published_at = NOW()
-        WHERE id = ?
-    ");
-
-    $stmt->bind_param(
-        "i",
-        $content_id
-    );
-
-    $stmt->execute();
-
-    header("Location: editor-dashboard.php");
-    exit();
-}
-
-
-// =====================================
-// DELETE EDITORIAL CONTENT
-// =====================================
-
-if (isset($_POST["delete_content"])) {
-
-    $content_id = (int)$_POST["content_id"];
-
-    $stmt = $conn->prepare("
-        DELETE FROM editorial_content
-        WHERE id = ?
-    ");
-
-    $stmt->bind_param(
-        "i",
-        $content_id
-    );
-
-    $stmt->execute();
-
-    header("Location: editor-dashboard.php");
-    exit();
-}
-
-
-// =====================================
-// REVIEWERS
+// DATA
 // =====================================
 
 $reviewers = $conn->query("
@@ -212,226 +157,81 @@ $reviewers = $conn->query("
     FROM users
     WHERE role = 'reviewer'
     ORDER BY fullname
-");
+")->fetch_all(MYSQLI_ASSOC);
 
-
-// =====================================
-// ARTICLES
-// =====================================
+$filter = $_GET["status"] ?? "";
 
 $sql = "
-
 SELECT
     submissions.*,
     users.fullname AS author,
-    reviews.status AS review_status,
-    reviews.comments
-
+    users.email AS author_email,
+    users.free_access AS author_free,
+    reviewer.fullname AS reviewer_name,
+    r.status AS review_status,
+    r.comments
 FROM submissions
-
 JOIN users
     ON submissions.user_id = users.id
-
-LEFT JOIN reviews
-    ON submissions.id = reviews.submission_id
-
-ORDER BY submissions.created_at DESC
-
+LEFT JOIN users reviewer
+    ON submissions.reviewer_id = reviewer.id
+LEFT JOIN reviews r
+    ON r.id = (SELECT MAX(id) FROM reviews WHERE reviews.submission_id = submissions.id)
 ";
 
-$result = $conn->query($sql);
+if ($filter !== "") {
+    $sql .= " WHERE submissions.status = ? ";
+}
 
+$sql .= " ORDER BY submissions.created_at DESC";
 
-// =====================================
-// EDITORIAL CONTENT
-// =====================================
+$stmt = $conn->prepare($sql);
 
-$content_result = $conn->query("
+if ($filter !== "") {
+    $stmt->bind_param("s", $filter);
+}
 
-SELECT
-    editorial_content.*,
-    users.fullname AS editor_name
+$stmt->execute();
+$result = $stmt->get_result();
 
-FROM editorial_content
-
-JOIN users
-    ON editorial_content.author_id = users.id
-
-ORDER BY editorial_content.created_at DESC
-
+$payments = $conn->query("
+    SELECT
+        payments.*,
+        users.fullname,
+        submissions.title
+    FROM payments
+    JOIN users ON payments.user_id = users.id
+    JOIN submissions ON payments.submission_id = submissions.id
+    WHERE payments.status IN ('Pending', 'Awaiting Confirmation')
+    ORDER BY payments.created_at DESC
 ");
 
+$content_result = $conn->query("
+    SELECT
+        editorial_content.*,
+        users.fullname AS editor_name
+    FROM editorial_content
+    JOIN users
+        ON editorial_content.author_id = users.id
+    ORDER BY editorial_content.created_at DESC
+");
+
+$statuses = ["Submitted", "Under Review", "Accepted", "Revision", "Rejected", "Payment Pending", "Paid", "Published"];
+
 ?>
-
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Academia Institute | Excellence in Scientific Publishing</title>
-
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
-
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#000a1e",
-                        "primary-container": "#002147",
-                        "secondary": "#426087",
-                        "secondary-container": "#b3d1fe",
-                        "surface": "#f8f9ff",
-                        "surface-container": "#e5eeff",
-                        "surface-container-low": "#eff4ff",
-                        "surface-container-high": "#dce9ff",
-                        "surface-container-highest": "#d3e4fe",
-                        "surface-variant": "#d3e4fe",
-                        "on-primary": "#ffffff",
-                        "on-primary-container": "#708ab5",
-                        "on-surface": "#0b1c30",
-                        "on-surface-variant": "#44474e",
-                        "outline": "#74777f",
-                        "outline-variant": "#c4c6cf",
-                        "error": "#ba1a1a"
-                    },
-
-                    spacing: {
-                        "margin-desktop": "64px",
-                        "margin-mobile": "20px",
-                        "stack-sm": "8px",
-                        "stack-md": "16px",
-                        "stack-lg": "32px",
-                        "stack-xl": "64px",
-                        "container-max": "1200px",
-                        "gutter": "24px"
-                    },
-
-                    borderRadius: {
-                        DEFAULT: "2px",
-                        lg: "6px",
-                        xl: "10px"
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        .material-symbols-outlined {
-            font-variation-settings:
-                "FILL" 0,
-                "wght" 400,
-                "GRAD" 0,
-                "opsz" 24;
-            vertical-align: middle;
-        }
-
-        .scrolling-fade {
-            mask-image: linear-gradient(to right,
-                    transparent,
-                    black 10%,
-                    black 90%,
-                    transparent);
-        }
-
-        .journal-card:hover .journal-overlay {
-            opacity: 1;
-        }
-
-        body {
-            background: #f8f9ff;
-            color: #0b1c30;
-            margin: 0;
-            font-family: Inter, sans-serif;
-        }
-    </style>
-
-<body>
-
-<header class="fixed top-0 left-0 right-0 z-50 bg-surface border-b border-outline-variant backdrop-blur-md">
-
-    <nav class="flex justify-between items-center max-w-container-max mx-auto h-20 px-margin-desktop">
-
-        <div>
-
-            <a href="about.html" class="no-underline">
-
-                <div class="text-2xl font-bold tracking-tight text-primary uppercase">
-                    ARAI
-                </div>
-
-                <div class="text-[11px] tracking-[2px] uppercase text-on-surface-variant">
-                    Academic Research AI
-                </div>
-
-            </a>
-
-        </div>
-
-        <div class="hidden md:flex gap-stack-lg items-center">
-
-            <a href="about.html" class="text-primary border-b-2 border-primary font-bold">
-                About
-            </a>
-
-            <a href="journals.html" class="hover:text-primary transition">
-                Journals
-            </a>
-
-            <a href="register.php" class="hover:text-primary transition">
-                Publish
-            </a>
-
-            <a href="authors.html" class="hover:text-primary transition">
-                Authors
-            </a>
-
-            <a href="reviewers.html" class="hover:text-primary transition">
-                Reviewers
-            </a>
-
-            <a href="archive.php" class="hover:text-primary transition">
-                Archive
-            </a>
-
-        </div>
-
-        <div class="flex items-center gap-stack-md">
-
-            <a href="archive.php" class="material-symbols-outlined hover:scale-110 transition">
-                search
-            </a>
-
-            <a href="signin.php"
-               class="bg-primary text-white px-6 py-2 rounded-lg hover:opacity-90 transition">
-                Sign In
-            </a>
-
-        </div>
-
-    </nav>
-
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
-<title>Editorial Dashboard</title>
+<title>Editorial Dashboard | <?= e($site_name) ?></title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
 </head>
-
 
 <body class="bg-slate-100 text-slate-900">
 
@@ -442,7 +242,7 @@ ORDER BY editorial_content.created_at DESC
 
 <header class="bg-white border-b px-8 py-5">
 
-    <div class="max-w-7xl mx-auto flex justify-between items-center">
+    <div class="max-w-7xl mx-auto flex flex-wrap gap-4 justify-between items-center">
 
         <div>
 
@@ -451,18 +251,19 @@ ORDER BY editorial_content.created_at DESC
             </h1>
 
             <p class="text-slate-500">
-                Welcome, <?= htmlspecialchars($user["fullname"]) ?>
+                Welcome, <?= e($user["fullname"]) ?>
             </p>
 
         </div>
 
-        <a
-            href="about.html"
-            target="_blank"
-            class="px-4 py-2 bg-slate-900 text-white rounded-lg"
-        >
-            View About Page
-        </a>
+        <nav class="flex flex-wrap gap-3">
+
+            <a href="about.html" class="px-4 py-2 border rounded-lg">Site</a>
+            <a href="archive.php" class="px-4 py-2 border rounded-lg">Archive</a>
+            <a href="account-settings.php" class="px-4 py-2 border rounded-lg">Account</a>
+            <a href="logout.php" class="px-4 py-2 bg-slate-900 text-white rounded-lg">Log out</a>
+
+        </nav>
 
     </div>
 
@@ -470,6 +271,247 @@ ORDER BY editorial_content.created_at DESC
 
 
 <main class="max-w-7xl mx-auto px-8 py-10">
+
+
+<!-- =====================================
+     PAYMENTS WAITING FOR CONFIRMATION
+===================================== -->
+
+<section class="mb-10">
+
+    <h2 class="text-xl font-bold mb-5">
+        Payments to Confirm
+    </h2>
+
+    <?php if ($payments->num_rows === 0): ?>
+
+        <p class="text-slate-500">No payments waiting.</p>
+
+    <?php endif; ?>
+
+    <div class="space-y-4">
+
+    <?php while ($payment = $payments->fetch_assoc()): ?>
+
+        <div class="bg-white rounded-xl shadow-sm p-6 flex flex-wrap justify-between gap-4">
+
+            <div>
+
+                <p class="font-bold">
+                    #<?= (int)$payment["id"] ?> — <?= e($payment["title"]) ?>
+                </p>
+
+                <p class="text-slate-600 mt-1">
+                    <?= e($payment["fullname"]) ?> ·
+                    <?= e(number_format((float)$payment["amount"], 2) . " " . $payment["currency"]) ?> ·
+                    <?= e($payment["plan"]) ?> ·
+                    <?= e($payment["method"]) ?>
+                </p>
+
+                <p class="text-sm mt-1">
+                    Status: <strong><?= e($payment["status"]) ?></strong>
+                    · <?= e(date("d M Y H:i", strtotime($payment["created_at"]))) ?>
+                </p>
+
+                <?php if (!empty($payment["receipt_file"])): ?>
+                    <a href="<?= e(upload_url($payment["receipt_file"])) ?>" target="_blank" class="text-blue-700 font-semibold">
+                        View receipt →
+                    </a>
+                <?php else: ?>
+                    <span class="text-sm text-slate-500">No receipt uploaded yet</span>
+                <?php endif; ?>
+
+            </div>
+
+            <div class="flex gap-2 items-start">
+
+                <form method="POST">
+                    <input type="hidden" name="payment_id" value="<?= (int)$payment["id"] ?>">
+                    <button type="submit" name="confirm_payment" class="bg-green-600 text-white px-4 py-2 rounded-lg">
+                        Confirm payment
+                    </button>
+                </form>
+
+                <form method="POST">
+                    <input type="hidden" name="payment_id" value="<?= (int)$payment["id"] ?>">
+                    <button type="submit" name="reject_payment" class="bg-red-600 text-white px-4 py-2 rounded-lg"
+                            onclick="return confirm('Reject this payment?')">
+                        Reject
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+
+    <?php endwhile; ?>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================
+     ARTICLES
+===================================== -->
+
+<section class="mb-10">
+
+    <div class="flex flex-wrap justify-between items-center gap-4 mb-5">
+
+        <h2 class="text-xl font-bold">
+            Submitted Articles
+        </h2>
+
+        <form method="GET">
+            <select name="status" onchange="this.form.submit()" class="border rounded-lg px-4 py-2">
+                <option value="">All statuses</option>
+                <?php foreach ($statuses as $status): ?>
+                    <option value="<?= e($status) ?>" <?= $filter === $status ? "selected" : "" ?>><?= e($status) ?></option>
+                <?php endforeach; ?>
+            </select>
+        </form>
+
+    </div>
+
+    <?php if ($result->num_rows === 0): ?>
+
+        <p class="text-slate-500">No articles.</p>
+
+    <?php endif; ?>
+
+    <?php while ($row = $result->fetch_assoc()): ?>
+
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-5">
+
+            <h3 class="text-lg font-bold">
+                <?= e($row["title"]) ?>
+            </h3>
+
+            <p class="mt-2">
+                Author: <?= e($row["author"]) ?>
+                <span class="text-slate-500">(<?= e($row["author_email"]) ?>)</span>
+                <?php if ($row["author_free"]): ?>
+                    <span class="ml-2 px-2 py-0.5 rounded bg-green-100 text-green-800 text-sm">Special access · free</span>
+                <?php endif; ?>
+            </p>
+
+            <p class="mt-1">
+                Journal: <?= e($row["journal"]) ?>
+            </p>
+
+            <p class="mt-1">
+                Status: <strong><?= e($row["status"]) ?></strong>
+            </p>
+
+            <p class="mt-1">
+                Reviewer: <?= e($row["reviewer_name"] ?? "Not assigned") ?>
+                · Decision: <?= e($row["review_status"] ?? "Waiting for review") ?>
+            </p>
+
+            <?php if (!empty($row["comments"])): ?>
+
+                <p class="mt-3 text-slate-600">
+                    Reviewer Comment:
+                    <?= nl2br(e($row["comments"])) ?>
+                </p>
+
+            <?php endif; ?>
+
+            <?php if (!empty($row["filename"])): ?>
+
+                <div class="mt-4">
+                    <a href="<?= e(upload_url($row["filename"])) ?>" target="_blank" class="text-blue-700 font-semibold">
+                        Open Manuscript →
+                    </a>
+                </div>
+
+            <?php endif; ?>
+
+
+            <div class="mt-5 flex flex-wrap gap-6">
+
+                <!-- ASSIGN REVIEWER -->
+
+                <form method="POST" class="flex gap-3">
+
+                    <input type="hidden" name="submission_id" value="<?= (int)$row["id"] ?>">
+
+                    <select name="reviewer_id" required class="border rounded-lg px-4 py-2">
+
+                        <option value="">Choose Reviewer</option>
+
+                        <?php foreach ($reviewers as $reviewer): ?>
+
+                            <option value="<?= (int)$reviewer["id"] ?>" <?= (int)$row["reviewer_id"] === (int)$reviewer["id"] ? "selected" : "" ?>>
+                                <?= e($reviewer["fullname"]) ?>
+                            </option>
+
+                        <?php endforeach; ?>
+
+                    </select>
+
+                    <button type="submit" name="assign" class="bg-blue-600 text-white px-4 py-2 rounded-lg">
+                        Assign Reviewer
+                    </button>
+
+                </form>
+
+
+                <!-- CHANGE STATUS -->
+
+                <form method="POST" class="flex gap-3">
+
+                    <input type="hidden" name="submission_id" value="<?= (int)$row["id"] ?>">
+
+                    <select name="status" class="border rounded-lg px-4 py-2">
+                        <?php foreach ($statuses as $status): ?>
+                            <?php if ($status !== "Published"): ?>
+                                <option value="<?= e($status) ?>" <?= $row["status"] === $status ? "selected" : "" ?>><?= e($status) ?></option>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </select>
+
+                    <button type="submit" name="set_status" class="border border-slate-400 px-4 py-2 rounded-lg">
+                        Set status
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <!-- PUBLISH -->
+
+            <?php if (in_array($row["status"], ["Accepted", "Payment Pending", "Paid"], true)): ?>
+
+                <form method="POST" class="mt-4 flex flex-wrap gap-3 items-center">
+
+                    <input type="hidden" name="submission_id" value="<?= (int)$row["id"] ?>">
+
+                    <input type="text" name="doi" value="<?= e($row["doi"]) ?>" placeholder="DOI (optional), e.g. 10.1234/abcd"
+                           class="border rounded-lg px-4 py-2 w-72">
+
+                    <button type="submit" name="publish" class="bg-green-600 text-white px-5 py-2 rounded-lg"
+                            <?php if ($row["status"] !== "Paid"): ?>onclick="return confirm('The fee is not confirmed yet. Publish anyway?')"<?php endif; ?>>
+                        Publish Article
+                    </button>
+
+                </form>
+
+            <?php elseif ($row["status"] === "Published"): ?>
+
+                <a href="article.php?id=<?= (int)$row["id"] ?>" target="_blank" class="inline-block mt-4 text-green-700 font-semibold">
+                    View published article →
+                </a>
+
+            <?php endif; ?>
+
+        </div>
+
+    <?php endwhile; ?>
+
+</section>
 
 
 <!-- =====================================
@@ -486,179 +528,56 @@ ORDER BY editorial_content.created_at DESC
         Publish news, videos, courses and announcements directly to About page.
     </p>
 
-
     <form method="POST" class="space-y-5">
 
-        <input
-            type="hidden"
-            name="create_content"
-            value="1"
-        >
-
-
-        <!-- TYPE -->
+        <input type="hidden" name="create_content" value="1">
 
         <div>
-
-            <label class="block font-semibold mb-2">
-                Content Type
-            </label>
-
-            <select
-                name="type"
-                required
-                class="w-full border rounded-lg px-4 py-3"
-            >
-
-                <option value="">
-                    Select content type
-                </option>
-
-                <option value="News">
-                    📰 News
-                </option>
-
-                <option value="Video">
-                    🎥 Video
-                </option>
-
-                <option value="Course">
-                    🎓 Course
-                </option>
-
-                <option value="Announcement">
-                    📢 Announcement
-                </option>
-
+            <label class="block font-semibold mb-2">Content Type</label>
+            <select name="type" required class="w-full border rounded-lg px-4 py-3">
+                <option value="">Select content type</option>
+                <option value="News">📰 News</option>
+                <option value="Video">🎥 Video</option>
+                <option value="Course">🎓 Course</option>
+                <option value="Announcement">📢 Announcement</option>
             </select>
-
         </div>
 
-
-        <!-- TITLE -->
-
         <div>
-
-            <label class="block font-semibold mb-2">
-                Title
-            </label>
-
-            <input
-                type="text"
-                name="title"
-                required
-                placeholder="Content title"
-                class="w-full border rounded-lg px-4 py-3"
-            >
-
+            <label class="block font-semibold mb-2">Title</label>
+            <input type="text" name="title" required placeholder="Content title" class="w-full border rounded-lg px-4 py-3">
         </div>
 
-
-        <!-- DESCRIPTION -->
-
         <div>
-
-            <label class="block font-semibold mb-2">
-                Short Description
-            </label>
-
-            <textarea
-                name="description"
-                rows="3"
-                placeholder="Short description..."
-                class="w-full border rounded-lg px-4 py-3"
-            ></textarea>
-
+            <label class="block font-semibold mb-2">Short Description</label>
+            <textarea name="description" rows="3" placeholder="Short description..." class="w-full border rounded-lg px-4 py-3"></textarea>
         </div>
 
-
-        <!-- CONTENT -->
-
         <div>
-
-            <label class="block font-semibold mb-2">
-                Content
-            </label>
-
-            <textarea
-                name="content"
-                rows="7"
-                placeholder="Write the full news, course information or announcement..."
-                class="w-full border rounded-lg px-4 py-3"
-            ></textarea>
-
+            <label class="block font-semibold mb-2">Content</label>
+            <textarea name="content" rows="7" placeholder="Write the full news, course information or announcement..." class="w-full border rounded-lg px-4 py-3"></textarea>
         </div>
 
-
-        <!-- VIDEO / LINK -->
-
         <div>
-
-            <label class="block font-semibold mb-2">
-                Video / Course / External URL
-            </label>
-
-            <input
-                type="url"
-                name="media_url"
-                placeholder="https://..."
-                class="w-full border rounded-lg px-4 py-3"
-            >
-
+            <label class="block font-semibold mb-2">Video / Course / External URL</label>
+            <input type="url" name="media_url" placeholder="https://..." class="w-full border rounded-lg px-4 py-3">
         </div>
 
-
-        <!-- IMAGE -->
-
         <div>
-
-            <label class="block font-semibold mb-2">
-                Thumbnail / Image URL
-            </label>
-
-            <input
-                type="url"
-                name="thumbnail_url"
-                placeholder="https://..."
-                class="w-full border rounded-lg px-4 py-3"
-            >
-
+            <label class="block font-semibold mb-2">Thumbnail / Image URL</label>
+            <input type="url" name="thumbnail_url" placeholder="https://..." class="w-full border rounded-lg px-4 py-3">
         </div>
 
-
-        <!-- STATUS -->
-
         <div>
-
-            <label class="block font-semibold mb-2">
-                Status
-            </label>
-
-            <select
-                name="status"
-                class="w-full border rounded-lg px-4 py-3"
-            >
-
-                <option value="Draft">
-                    Draft
-                </option>
-
-                <option value="Published">
-                    Publish immediately
-                </option>
-
+            <label class="block font-semibold mb-2">Status</label>
+            <select name="status" class="w-full border rounded-lg px-4 py-3">
+                <option value="Draft">Draft</option>
+                <option value="Published">Publish immediately</option>
             </select>
-
         </div>
 
-
-        <button
-            type="submit"
-            class="bg-blue-700 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-800"
-        >
-
+        <button type="submit" class="bg-blue-700 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-800">
             Publish / Save Content
-
         </button>
 
     </form>
@@ -676,7 +595,6 @@ ORDER BY editorial_content.created_at DESC
         News / Videos / Courses
     </h2>
 
-
     <div class="space-y-4">
 
         <?php while ($content = $content_result->fetch_assoc()): ?>
@@ -688,87 +606,43 @@ ORDER BY editorial_content.created_at DESC
                     <div>
 
                         <span class="text-xs font-bold uppercase text-blue-700">
-
-                            <?= htmlspecialchars($content["type"]) ?>
-
+                            <?= e($content["type"]) ?>
                         </span>
 
-
                         <h3 class="text-lg font-bold mt-1">
-
-                            <?= htmlspecialchars($content["title"]) ?>
-
+                            <?= e($content["title"]) ?>
                         </h3>
 
-
                         <p class="text-slate-500 mt-2">
-
-                            <?= htmlspecialchars($content["description"]) ?>
-
+                            <?= e($content["description"]) ?>
                         </p>
 
-
                         <p class="text-sm mt-3">
-
-                            Status:
-
-                            <strong>
-
-                                <?= htmlspecialchars($content["status"]) ?>
-
-                            </strong>
-
+                            Status: <strong><?= e($content["status"]) ?></strong>
+                            · by <?= e($content["editor_name"]) ?>
                         </p>
 
                     </div>
-
 
                     <div class="flex gap-2">
 
                         <?php if ($content["status"] !== "Published"): ?>
 
                             <form method="POST">
-
-                                <input
-                                    type="hidden"
-                                    name="content_id"
-                                    value="<?= $content["id"] ?>"
-                                >
-
-                                <button
-                                    type="submit"
-                                    name="publish_content"
-                                    class="bg-green-600 text-white px-4 py-2 rounded-lg"
-                                >
-
+                                <input type="hidden" name="content_id" value="<?= (int)$content["id"] ?>">
+                                <button type="submit" name="publish_content" class="bg-green-600 text-white px-4 py-2 rounded-lg">
                                     Publish
-
                                 </button>
-
                             </form>
 
                         <?php endif; ?>
 
-
                         <form method="POST">
-
-                            <input
-                                type="hidden"
-                                name="content_id"
-                                value="<?= $content["id"] ?>"
-                            >
-
-                            <button
-                                type="submit"
-                                name="delete_content"
-                                class="bg-red-600 text-white px-4 py-2 rounded-lg"
-                                onclick="return confirm('Delete this content?')"
-                            >
-
+                            <input type="hidden" name="content_id" value="<?= (int)$content["id"] ?>">
+                            <button type="submit" name="delete_content" class="bg-red-600 text-white px-4 py-2 rounded-lg"
+                                    onclick="return confirm('Delete this content?')">
                                 Delete
-
                             </button>
-
                         </form>
 
                     </div>
@@ -784,179 +658,7 @@ ORDER BY editorial_content.created_at DESC
 </section>
 
 
-<!-- =====================================
-     ARTICLES
-===================================== -->
-
-<section>
-
-    <h2 class="text-xl font-bold mb-5">
-        Submitted Articles
-    </h2>
-
-
-    <?php while ($row = $result->fetch_assoc()): ?>
-
-        <div class="bg-white rounded-xl shadow-sm p-6 mb-5">
-
-            <h3 class="text-lg font-bold">
-
-                <?= htmlspecialchars($row["title"]) ?>
-
-            </h3>
-
-
-            <p class="mt-2">
-
-                Author:
-
-                <?= htmlspecialchars($row["author"]) ?>
-
-            </p>
-
-
-            <p class="mt-1">
-
-                Status:
-
-                <strong>
-
-                    <?= htmlspecialchars($row["status"]) ?>
-
-                </strong>
-
-            </p>
-
-
-            <p class="mt-1">
-
-                Reviewer Decision:
-
-                <?= htmlspecialchars(
-                    $row["review_status"] ?? "Waiting for review"
-                ) ?>
-
-            </p>
-
-
-            <?php if (!empty($row["comments"])): ?>
-
-                <p class="mt-3 text-slate-600">
-
-                    Reviewer Comment:
-
-                    <?= htmlspecialchars($row["comments"]) ?>
-
-                </p>
-
-            <?php endif; ?>
-
-
-            <!-- ASSIGN REVIEWER -->
-
-            <form method="POST" class="mt-5 flex gap-3">
-
-                <input
-                    type="hidden"
-                    name="submission_id"
-                    value="<?= $row["id"] ?>"
-                >
-
-
-                <select
-                    name="reviewer_id"
-                    required
-                    class="border rounded-lg px-4 py-2"
-                >
-
-                    <option value="">
-                        Choose Reviewer
-                    </option>
-
-
-                    <?php
-
-                    $reviewers->data_seek(0);
-
-                    while ($reviewer = $reviewers->fetch_assoc()):
-
-                    ?>
-
-                        <option
-                            value="<?= $reviewer["id"] ?>"
-                        >
-
-                            <?= htmlspecialchars(
-                                $reviewer["fullname"]
-                            ) ?>
-
-                        </option>
-
-                    <?php endwhile; ?>
-
-                </select>
-
-
-                <button
-                    type="submit"
-                    name="assign"
-                    class="bg-blue-600 text-white px-4 py-2 rounded-lg"
-                >
-
-                    Assign Reviewer
-
-                </button>
-
-            </form>
-
-
-            <div class="mt-5">
-
-                <a
-                    href="editor-review.php?id=<?= $row["id"] ?>"
-                    class="text-blue-700 font-semibold"
-                >
-
-                    Open Manuscript →
-
-                </a>
-
-            </div>
-
-
-            <?php if ($row["review_status"] === "Accept"): ?>
-
-                <form method="POST" class="mt-4">
-
-                    <input
-                        type="hidden"
-                        name="submission_id"
-                        value="<?= $row["id"] ?>"
-                    >
-
-                    <button
-                        type="submit"
-                        name="publish"
-                        class="bg-green-600 text-white px-5 py-2 rounded-lg"
-                    >
-
-                        Publish Article
-
-                    </button>
-
-                </form>
-
-            <?php endif; ?>
-
-        </div>
-
-    <?php endwhile; ?>
-
-</section>
-
-
 </main>
 
 </body>
-
 </html>

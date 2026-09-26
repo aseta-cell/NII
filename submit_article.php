@@ -1,55 +1,35 @@
 <?php
 
+// Handles the manuscript form on publish.php
+
 require_once "config.php";
 
-if (!isset($_SESSION["user_id"])) {
-    header("Location: signin.php");
-    exit();
+require_login();
+
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    redirect("publish.php");
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+$title = trim($_POST["title"] ?? "");
+$journal = trim($_POST["journal"] ?? "");
+$abstract = trim($_POST["abstract"] ?? "");
+$keywords = trim($_POST["keywords"] ?? "");
 
-    $title = trim($_POST["title"]);
-    $abstract = trim($_POST["abstract"]);
-    $keywords = trim($_POST["keywords"]);
-
-    $fileName = "";
-
-    if (isset($_FILES["article_file"]) && $_FILES["article_file"]["error"] == 0) {
-
-        $uploadDir = "uploads/";
-
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
-
-        $fileName = time() . "_" . basename($_FILES["article_file"]["name"]);
-
-        move_uploaded_file(
-            $_FILES["article_file"]["tmp_name"],
-            $uploadDir . $fileName
-        );
-    }
-
-    $stmt = $conn->prepare("
-        INSERT INTO articles
-        (user_id,title,abstract,keywords,file_name)
-        VALUES (?,?,?,?,?)
-    ");
-
-    $stmt->bind_param(
-        "issss",
-        $_SESSION["user_id"],
-        $title,
-        $abstract,
-        $keywords,
-        $fileName
-    );
-
-    $stmt->execute();
-
-    header("Location: dashboard.php");
-    exit();
+if ($title === "" || $journal === "" || $abstract === "") {
+    redirect("publish.php?error=fields");
 }
 
-?>
+$filename = save_upload("article_file", ["pdf", "doc", "docx"]);
+
+if ($filename === null) {
+    redirect("publish.php?error=file");
+}
+
+$stmt = $conn->prepare("
+    INSERT INTO submissions (user_id, title, journal, abstract, keywords, filename)
+    VALUES (?, ?, ?, ?, ?, ?)
+");
+$stmt->bind_param("isssss", $_SESSION["user_id"], $title, $journal, $abstract, $keywords, $filename);
+$stmt->execute();
+
+redirect("dashboard.php?submitted=1");

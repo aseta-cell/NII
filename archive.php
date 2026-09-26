@@ -1,16 +1,8 @@
 <?php
 require_once "config.php";
 
-$search = "";
-
-if (isset($_GET["search"])) {
-    $search = trim($_GET["search"]);
-}
-$journal = "";
-
-if (isset($_GET["journal"])) {
-    $journal = $_GET["journal"];
-}
+$search = trim($_GET["search"] ?? "");
+$journal = trim($_GET["journal"] ?? "");
 
 $sql = "
 SELECT
@@ -19,33 +11,42 @@ SELECT
 FROM submissions
 JOIN users
 ON submissions.user_id = users.id
-WHERE submissions.status='Published'
+WHERE submissions.status = 'Published'
 ";
-if ($journal != "") {
 
-    $journal = $conn->real_escape_string($journal);
+$types = "";
+$params = [];
 
-    $sql .= " AND submissions.journal='$journal' ";
+if ($journal !== "") {
+    $sql .= " AND submissions.journal = ? ";
+    $types .= "s";
+    $params[] = $journal;
 }
-if ($search != "") {
 
-    $search = $conn->real_escape_string($search);
-
+if ($search !== "") {
+    $like = "%" . $search . "%";
     $sql .= "
     AND (
-        submissions.title LIKE '%$search%'
-        OR users.fullname LIKE '%$search%'
-        OR submissions.doi LIKE '%$search%'
-        OR submissions.journal LIKE '%$search%'
+        submissions.title LIKE ?
+        OR users.fullname LIKE ?
+        OR submissions.doi LIKE ?
+        OR submissions.journal LIKE ?
     )
     ";
-
+    $types .= "ssss";
+    array_push($params, $like, $like, $like, $like);
 }
 
 $sql .= " ORDER BY submissions.created_at DESC";
-if (!$result = $conn->query($sql)) {
-    die("SQL Error: " . $conn->error);
+
+$stmt = $conn->prepare($sql);
+
+if ($params) {
+    $stmt->bind_param($types, ...$params);
 }
+
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 <!DOCTYPE html>
 
@@ -190,13 +191,13 @@ Journals
 
 
 <a class="font-title-lg text-title-lg text-on-surface-variant hover:text-primary transition-colors duration-200"
-href="reviewers.html">
+href="reviewers.php">
 Peer Review
 </a>
 
 
 <a class="font-title-lg text-title-lg text-on-surface-variant hover:text-primary transition-colors duration-200"
-href="my-submissions.html">
+href="my-submissions.php">
 Submissions
 </a>
 
@@ -259,19 +260,22 @@ Sign In
 
 Showing articles from
 
-<b><?= htmlspecialchars($journal) ?></b>
+<b><?= e($journal) ?></b>
 
 </p>
 
 <?php endif; ?>
 <div class="relative max-w-2xl group">
 <form method="GET" class="relative max-w-2xl group">
+<?php if ($journal !== ""): ?>
+<input type="hidden" name="journal" value="<?= e($journal) ?>">
+<?php endif; ?>
 <input
 class="w-full pl-12 pr-28 py-4 bg-surface-container-lowest border border-outline-variant"
 type="text"
 name="search"
 placeholder="Search by DOI, Title, or Author..."
-value="<?= htmlspecialchars($search) ?>">
+value="<?= e($search) ?>">
 
 <button
 type="submit"
@@ -291,21 +295,15 @@ Search
 <div>
 <h3 class="font-label-caps text-label-caps text-primary mb-stack-sm border-b border-outline-variant pb-1">Filter by Journal</h3>
 <ul class="space-y-1 mt-stack-md">
-<a href="journal.php?journal=Artificial%20Intelligence">
-Artificial Intelligence
+<li><a href="archive.php" class="<?= $journal === "" ? "font-bold text-primary" : "text-on-surface-variant hover:text-primary" ?>">All journals</a></li>
+<?php foreach ($settings["journals"] as $journal_name): ?>
+<li>
+<a href="archive.php?journal=<?= urlencode($journal_name) ?>"
+class="<?= $journal === $journal_name ? "font-bold text-primary" : "text-on-surface-variant hover:text-primary" ?>">
+<?= e($journal_name) ?>
 </a>
-
-<a href="journal.php?journal=Clinical%20Medicine">
-Clinical Medicine
-</a>
-
-<a href="journal.php?journal=Social%20Sciences">
-Social Sciences
-</a>
-
-<a href="journal.php?journal=Engineering%20%26%20Tech">
-Engineering &amp; Tech
-</a>
+</li>
+<?php endforeach; ?>
 </ul>
 </div>
 <!-- Year Range -->
@@ -341,27 +339,7 @@ Engineering &amp; Tech
 <div class="flex-grow">
 <!-- Journal Header -->
 
-<?php
 
-$title = "Journal";
-
-if($journal=="Engineering & Tech"){
-    $title="Journal of Engineering & Technology";
-}
-
-if($journal=="Artificial Intelligence"){
-    $title="Journal of Artificial Intelligence";
-}
-
-if($journal=="Clinical Medicine"){
-    $title="Journal of Clinical Medicine";
-}
-
-if($journal=="Social Sciences"){
-    $title="Journal of Social Sciences";
-}
-
-?>
 <!-- Volumes and Issues Accordion -->
 <div class="space-y-stack-sm mb-stack-xl">
 <!-- Volume 14 (Active) -->
@@ -403,65 +381,49 @@ if($journal=="Social Sciences"){
     </div>
 
     <h2 class="text-2xl font-bold text-primary mb-3">
-        <?= htmlspecialchars($row["title"]) ?>
+        <?= e($row["title"]) ?>
     </h2>
 
     <p class="text-gray-700 mb-2">
         <strong>Authors:</strong>
-        <?= htmlspecialchars($row["author"]) ?>
+        <?= e($row["author"]) ?>
     </p>
 
     <p class="text-gray-700 mb-2">
         <strong>Journal:</strong>
-        <?= htmlspecialchars($row["journal"]) ?>
+        <?= e($row["journal"]) ?>
+    </p>
+
+    <p class="text-gray-500 text-sm mb-2">
+        <?= (int)$row["views"] ?> views · <?= (int)$row["downloads"] ?> downloads
     </p>
 
     <p class="text-gray-700 mb-4">
         <strong>DOI:</strong>
-        <?= htmlspecialchars($row["doi"]) ?>
+        <?= e($row["doi"]) ?>
     </p>
 
     <p class="text-gray-600 leading-7 mb-6">
-        <?= htmlspecialchars(substr($row["abstract"],0,300)) ?>...
+        <?= e(mb_strimwidth((string)$row["abstract"], 0, 300, "...")) ?>
     </p>
 
     <div class="flex gap-4">
-<a href="article.php?id=<?= $row["id"] ?>">
-    View Article (ID = <?= $row["id"] ?>)
+<a href="article.php?id=<?= (int)$row["id"] ?>"
+   class="bg-primary text-white px-5 py-2 rounded hover:opacity-90">
+    View Article
 </a>
 
+        <?php if (!empty($row["filename"])): ?>
         <a
-            href="<?= htmlspecialchars($row["pdf"]) ?>"
+            href="download.php?id=<?= (int)$row["id"] ?>"
             target="_blank"
             class="border border-primary text-primary px-5 py-2 rounded hover:bg-gray-100">
             Download PDF
         </a>
+        <?php endif; ?>
 
     </div>
 
-</div>
-<hr class="my-8">
-
-<h2 class="text-3xl font-bold mb-4">
-PDF Viewer
-</h2>
-
-<iframe
-    src="<?= htmlspecialchars($article["pdf"]) ?>"
-    width="100%"
-    height="900"
-    class="border rounded-lg">
-</iframe>
-
-<div class="mt-6">
-    <a
-        href="<?= htmlspecialchars($article["pdf"]) ?>"
-        target="_blank"
-        class="bg-primary text-white px-6 py-3 rounded">
-
-        Download PDF
-
-    </a>
 </div>
 <?php endwhile; ?>
 

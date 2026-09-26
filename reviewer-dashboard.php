@@ -1,43 +1,29 @@
 <?php
-session_start();
 require_once "config.php";
 
-if (!isset($_SESSION["user_id"])) {
-    header("Location: signin.php");
-    exit();
-}
+$reviewer = require_role("reviewer");
+$user_id = $reviewer["id"];
 
-$user_id = $_SESSION["user_id"];
-
-// Проверяем, что вошел reviewer
-$stmt = $conn->prepare("SELECT role FROM users WHERE id=?");
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-
-$user = $stmt->get_result()->fetch_assoc();
-
-if ($user["role"] != "reviewer") {
-    die("Access denied");
-}
-
-// Получаем только статьи, назначенные этому reviewer
-$sql = "
+// Manuscripts assigned to this reviewer, with this reviewer's latest review
+$stmt = $conn->prepare("
 SELECT
     submissions.*,
     users.fullname AS author,
-    reviews.status AS review_status,
-    reviews.comments
+    r.status AS review_status,
+    r.comments
 FROM submissions
 JOIN users
     ON submissions.user_id = users.id
-LEFT JOIN reviews
-    ON submissions.id = reviews.submission_id
+LEFT JOIN reviews r
+    ON r.id = (
+        SELECT MAX(id) FROM reviews
+        WHERE reviews.submission_id = submissions.id
+        AND reviews.reviewer_id = ?
+    )
 WHERE submissions.reviewer_id = ?
 ORDER BY submissions.created_at DESC
-";
-
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $user_id);
+");
+$stmt->bind_param("ii", $user_id, $user_id);
 $stmt->execute();
 
 $result = $stmt->get_result();
@@ -176,19 +162,19 @@ $result = $stmt->get_result();
 <span class="font-display-lg text-display-lg text-primary dark:text-on-primary-fixed tracking-tight">Scholarly Archive</span>
 <nav class="hidden md:flex gap-6 items-center h-full">
 <a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-md text-body-md" href="journals.html">Journals</a>
-<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-md text-body-md" href="archive.html">Archive </a>
-<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-md text-body-md" href="publish.html">Submission</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-md text-body-md" href="archive.php">Archive </a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-md text-body-md" href="publish.php">Submission</a>
 <a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-md text-body-md" href="about.html">About</a>
 </nav>
 </div>
 <div class="flex items-center gap-4">
  <div class="flex items-center gap-stack-md">
 
-            <a href="search.html" class="material-symbols-outlined hover:scale-110 transition">
+            <a href="archive.php" class="material-symbols-outlined hover:scale-110 transition">
                 search
             </a>
 
-            <a href="dashboard.html"
+            <a href="dashboard.php"
                class="bg-primary text-white px-6 py-2 rounded-lg hover:opacity-90 transition">
                Me
             </a>
@@ -293,6 +279,14 @@ $result = $stmt->get_result();
 <!-- Manuscript Cards -->
 <div class="space-y-4">
 <!-- Card 1: Urgent -->
+<?php if (isset($_GET["reviewed"])): ?>
+<div class="p-4 rounded bg-green-100 text-green-800">Review sent. Thank you!</div>
+<?php endif; ?>
+<?php if ($result->num_rows === 0): ?>
+<div class="bg-surface-container-lowest border border-outline-variant p-6 rounded-xl">
+No manuscripts are assigned to you yet.
+</div>
+<?php endif; ?>
 <?php while($row = $result->fetch_assoc()): ?>
 
 <div class="bg-surface-container-lowest border border-outline-variant p-6 rounded-xl">
@@ -303,32 +297,21 @@ $result = $stmt->get_result();
 
 <h3 class="font-display-lg text-title-lg">
 
-<?= htmlspecialchars($row["title"]) ?>
+<?= e($row["title"]) ?>
 
 </h3>
 <p class="text-secondary">
     Journal:
-    <?= htmlspecialchars($row["journal"]) ?>
+    <?= e($row["journal"]) ?>
 </p>
 <p class="text-secondary">
 Author:
-<?= isset($row["author"]) ? htmlspecialchars($row["author"]) : "Unknown" ?>
+<?= isset($row["author"]) ? e($row["author"]) : "Unknown" ?>
 </p>
 <p>
 Status:
 
-<?php
-if (!empty($row["decision"])) {
-
-    echo htmlspecialchars($row["decision"]);
-
-} else {
-
-    echo "Pending Review";
-
-}
-
-?>
+<?= e($row["review_status"] ?? "Pending Review") ?>
 
 </p>
 
@@ -336,7 +319,7 @@ if (!empty($row["decision"])) {
 
 <span class="px-3 py-1 rounded-full bg-secondary-container">
 
-<?= htmlspecialchars($row["status"]) ?>
+<?= e($row["status"]) ?>
 
 </span>
 
@@ -345,7 +328,7 @@ if (!empty($row["decision"])) {
 <div class="mt-5">
 
 <a
-href="uploads/<?= urlencode($row["filename"]) ?>"
+href="<?= e(upload_url($row["filename"])) ?>"
 target="_blank"
 class="text-primary">
 
@@ -358,7 +341,7 @@ Download Manuscript
 <div class="mt-5">
 
 <a
-href="review.php?id=<?= $row["id"] ?>"
+href="review.php?id=<?= (int)$row["id"] ?>"
 class="bg-primary text-white px-5 py-2 rounded">
 
 Review Article
@@ -372,6 +355,8 @@ Review Article
 <br>
 
 <?php endwhile; ?>
+</div>
+</div>
 <!-- Right Column: Sidebar Panels -->
 <div class="lg:col-span-4 space-y-gutter">
 <!-- Quick-Access Guidelines -->

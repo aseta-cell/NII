@@ -1,10 +1,9 @@
 <?php
-session_start();
 require_once "config.php";
 $error = "";
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = trim($_POST["email"] ?? "");
-    $password = trim($_POST["password"] ?? "");
+    $password = $_POST["password"] ?? "";
     $stmt = $conn->prepare(
         "SELECT * FROM users WHERE email = ?"
     );
@@ -18,7 +17,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $user = $result->fetch_assoc();
     
         if (password_verify($password, $user["password"])) {
-          $_SESSION["user_id"] = $user["id"];
+session_regenerate_id(true);
+$_SESSION["user_id"] = $user["id"];
 $_SESSION["fullname"] = $user["fullname"];
 $_SESSION["email"] = $user["email"];
 $_SESSION["role"] = $user["role"];
@@ -26,19 +26,14 @@ $_SESSION["role"] = $user["role"];
 switch ($user["role"]) {
 
     case "editor":
-        header("Location: editor-dashboard.php");
-        break;
+        redirect("editor-dashboard.php");
 
     case "reviewer":
-        header("Location: reviewer-dashboard.php");
-        break;
+        redirect("reviewer-dashboard.php");
 
     default:
-        header("Location: dashboard.php");
-        break;
+        redirect("dashboard.php");
 }
-
-exit();
         } 
         else {
             $error = "Incorrect password.";
@@ -176,12 +171,12 @@ exit();
 <header class="bg-surface border-b border-outline-variant h-20 fixed top-0 w-full z-50">
 <nav class="flex justify-between items-center w-full px-margin-desktop max-w-container-max mx-auto h-full">
 <div class="flex items-center gap-10">
-<a class="font-display-lg text-display-lg text-primary" href="/">Scholarly Insights</a>
+<a class="font-display-lg text-display-lg text-primary" href="about.html">Scholarly Insights</a>
 <div class="hidden md:flex gap-8 items-center">
 <a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-200" href="journals.html">Journals</a>
-<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-200" href="archive.html">Archive</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-200" href="archive.php">Archive</a>
 <a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-200" href="my-submissions.php">Submissions</a>
-<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-200" href="archive.html">Directory</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-200" href="archive.php">Directory</a>
 </div>
 </div>
 <div class="flex items-center gap-6">
@@ -255,6 +250,9 @@ exit();
 <div class="h-[1px] bg-outline-variant flex-1"></div>
 </div>
 <!-- Individual Login Section -->
+<?php if ($error !== ""): ?>
+<p class="mb-4 p-3 rounded-lg bg-red-50 text-red-700 font-body-sm"><?= e($error) ?></p>
+<?php endif; ?>
 <form
 class="space-y-4"
 action="signin.php"
@@ -266,6 +264,7 @@ class="w-full px-4 py-3 bg-white border border-outline-variant rounded-lg focus:
 placeholder="dr.rossi@institute.edu"
 type="email"
 name="email"
+value="<?= e($_POST["email"] ?? "") ?>"
 required>
 </div>
 <div>
@@ -299,7 +298,7 @@ Register
 </form>
 <p class="mt-stack-lg text-center font-body-sm text-on-surface-variant">
                         New to Scholarly Insights? 
-                        <a class="text-primary font-bold hover:underline" href="#">Create an Account</a>
+                        <a class="text-primary font-bold hover:underline" href="register.php">Create an Account</a>
 </p>
 </div>
 </div>

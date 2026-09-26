@@ -1,3 +1,125 @@
+<?php
+require_once "config.php";
+
+$journal = $settings["journals"][basename(__FILE__)];
+
+$user_id = $_SESSION["user_id"] ?? null;
+
+
+// -------------------------
+// LIKE COUNT
+// -------------------------
+
+$stmt = $conn->prepare("
+    SELECT COUNT(*) AS total
+    FROM journal_likes
+    WHERE journal = ?
+");
+
+$stmt->bind_param("s", $journal);
+$stmt->execute();
+
+$like_result = $stmt->get_result()->fetch_assoc();
+
+$like_count = $like_result["total"];
+
+
+// -------------------------
+// COMMENT COUNT
+// -------------------------
+
+$stmt = $conn->prepare("
+    SELECT COUNT(*) AS total
+    FROM journal_comments
+    WHERE journal = ?
+    AND status = 'Published'
+");
+
+$stmt->bind_param("s", $journal);
+$stmt->execute();
+
+$comment_result = $stmt->get_result()->fetch_assoc();
+
+$comment_count = $comment_result["total"];
+
+
+// -------------------------
+// VIEW COUNT
+// -------------------------
+
+$stmt = $conn->prepare("
+    SELECT COUNT(*) AS total
+    FROM journal_views
+    WHERE journal = ?
+");
+
+$stmt->bind_param("s", $journal);
+$stmt->execute();
+
+$view_result = $stmt->get_result()->fetch_assoc();
+
+$view_count = $view_result["total"];
+
+
+// -------------------------
+// CHECK LIKE
+// -------------------------
+
+$user_liked = false;
+
+if ($user_id) {
+
+    $stmt = $conn->prepare("
+        SELECT id
+        FROM journal_likes
+        WHERE journal = ?
+        AND user_id = ?
+    ");
+
+    $stmt->bind_param("si", $journal, $user_id);
+    $stmt->execute();
+
+    $user_liked = $stmt->get_result()->num_rows > 0;
+}
+
+
+// -------------------------
+// CHECK FOLLOW
+// -------------------------
+
+$user_following = false;
+
+if ($user_id) {
+
+    $stmt = $conn->prepare("
+        SELECT id
+        FROM journal_follows
+        WHERE journal = ?
+        AND user_id = ?
+    ");
+
+    $stmt->bind_param("si", $journal, $user_id);
+    $stmt->execute();
+
+    $user_following = $stmt->get_result()->num_rows > 0;
+}
+
+
+// -------------------------
+// ADD VIEW
+// -------------------------
+
+$stmt = $conn->prepare("
+    INSERT INTO journal_views (journal, user_id)
+    VALUES (?, ?)
+");
+
+$stmt->bind_param("si", $journal, $user_id);
+$stmt->execute();
+
+$view_count++;
+
+?>
 <!DOCTYPE html>
 
 <html class="scroll-smooth" lang="en"><head>
@@ -138,15 +260,15 @@
 <div class="hidden md:flex gap-gutter items-center">
 <a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors duration-200 font-body-md text-body-md" href="about.html">About</a>
 <a class="text-primary dark:text-inverse-primary border-b-2 border-primary font-bold transition-colors duration-200 font-body-md text-body-md" href="#">Journals</a>
-<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors duration-200 font-body-md text-body-md" href="publish.html">Publish</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors duration-200 font-body-md text-body-md" href="publish.php">Publish</a>
 <a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors duration-200 font-body-md text-body-md" href="authors.html">Authors</a>
-<div class="flex items-center gap-stack-sm ml-stack-lg"><a href="dashboard.html">
+<div class="flex items-center gap-stack-sm ml-stack-lg"><a href="dashboard.php">
     <span class="material-symbols-outlined text-primary cursor-pointer hover:text-secondary transition-all">
         account_circle
     </span>
 </a>
 
-<a href="signin.html">
+<a href="signin.php">
     <button class="bg-primary-container text-on-primary-container px-6 py-2 rounded font-label-caps text-label-caps hover:opacity-80 transition-all cursor-pointer">
         Sign In
     </button>
@@ -190,7 +312,7 @@
 </a>
 </nav>
 <div class="mt-auto px-4 pb-stack-lg">
-    <a href="my-submissions.html"
+    <a href="my-submissions.php"
        class="block w-full bg-primary text-on-primary py-3 px-4 rounded-lg font-label-caps text-label-caps hover:opacity-90 active:scale-95 transition-all text-center">
         Submit Manuscript
     </a>
@@ -220,7 +342,7 @@ style="background-image: url
         <input
             type="hidden"
             name="journal"
-            value="<?= htmlspecialchars($journal) ?>"
+            value="<?= e($journal) ?>"
         >
 
         <button
@@ -293,7 +415,7 @@ style="background-image: url
         <input
             type="hidden"
             name="journal"
-            value="<?= htmlspecialchars($journal) ?>"
+            value="<?= e($journal) ?>"
         >
 
         <button
@@ -329,7 +451,7 @@ style="background-image: url
 
 </div>
 <span class="text-label-caps font-label-caps text-secondary block mb-2">SCIENTIFIC PERIODICAL</span>
-<h1 class="text-display-lg-mobile md:text-display-lg font-display-lg text-primary mb-stack-md leading-tight">International Journal of Artificial Intelligence</h1>
+<h1 class="text-display-lg-mobile md:text-display-lg font-display-lg text-primary mb-stack-md leading-tight">International Journal of Education</h1>
 <div class="grid grid-cols-2 gap-stack-md py-4 border-y border-outline-variant">
 <div>
 <p class="text-label-caps font-label-caps text-on-surface-variant">ISSN (PRINT)</p>
@@ -356,7 +478,7 @@ style="background-image: url
     <div class="flex flex-wrap gap-3 mb-6">
 
     <a
-        href="issue.php?journal=<?= urlencode($journal) ?>"
+        href="archive.php?journal=<?= urlencode($journal) ?>"
         class="bg-primary text-on-primary px-5 py-3 rounded-lg font-bold hover:opacity-90 transition-all flex items-center gap-2"
     >
 
@@ -370,7 +492,7 @@ style="background-image: url
 
 
     <a
-        href="pdf/current-issue.pdf"
+        href="archive.php?journal=<?= urlencode($journal) ?>"
         target="_blank"
         class="border border-primary text-primary px-5 py-3 rounded-lg font-bold hover:bg-surface-container transition-all flex items-center gap-2"
     >
@@ -636,7 +758,7 @@ style="background-image: url
             <input
                 type="hidden"
                 name="journal"
-                value="<?= htmlspecialchars($journal) ?>"
+                value="<?= e($journal) ?>"
             >
 
 
@@ -718,7 +840,7 @@ style="background-image: url
                     <div class="flex justify-between">
 
                         <strong>
-                            <?= htmlspecialchars($comment["fullname"]) ?>
+                            <?= e($comment["fullname"]) ?>
                         </strong>
 
                         <span class="text-sm text-on-surface-variant">
@@ -736,7 +858,7 @@ style="background-image: url
                     <p class="mt-2 text-on-surface-variant">
 
                         <?= nl2br(
-                            htmlspecialchars($comment["comment"])
+                            e($comment["comment"])
                         ) ?>
 
                     </p>

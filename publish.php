@@ -1,3 +1,20 @@
+<?php
+require_once "config.php";
+
+require_login();
+
+$stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
+$stmt->bind_param("i", $_SESSION["user_id"]);
+$stmt->execute();
+$user = $stmt->get_result()->fetch_assoc();
+
+$errors = [
+    "fields" => "Please fill in the title, journal and abstract.",
+    "file"   => "Please upload the manuscript as PDF, DOC or DOCX (max 20 MB).",
+];
+$error = $errors[$_GET["error"] ?? ""] ?? "";
+$selected_journal = $_GET["journal"] ?? "";
+?>
 <!DOCTYPE html>
 
 <html class="light" lang="en"><head>
@@ -135,19 +152,19 @@
 <a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="journals.html">Journals</a>
 <a class="text-primary border-b-2 border-primary font-bold font-body-md" href="publish.php">Publish</a>
 <a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="authors.html">Authors</a>
-<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="reviewers.html">Reviewers</a>
-<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="archive.html">Archive</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="reviewers.php">Reviewers</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="archive.php">Archive</a>
 </div>
 </div>
  <div class="flex items-center gap-stack-md">
 
-            <a href="search.html" class="material-symbols-outlined hover:scale-110 transition">
+            <a href="archive.php" class="material-symbols-outlined hover:scale-110 transition">
                 search
             </a>
 
-            <a href="signin.php"
+            <a href="dashboard.php"
                class="bg-primary text-white px-6 py-2 rounded-lg hover:opacity-90 transition">
-                Sign In
+                My Account
             </a>
 
         </div>
@@ -160,7 +177,10 @@
 <header class="mb-stack-xl">
 <div class="mb-stack-lg">
 <h1 class="font-headline-md text-headline-md text-primary mb-2">Submit New Manuscript</h1>
-<p class="text-on-surface-variant font-body-md">Manuscript ID: <span class="font-code-sm text-code-sm text-primary">ARI-2024-0089</span></p>
+<p class="text-on-surface-variant font-body-md">Fill in the details below and upload your manuscript.</p>
+<?php if ($error !== ""): ?>
+<p class="mt-4 p-3 rounded-lg bg-red-50 text-red-700 font-body-md"><?= e($error) ?></p>
+<?php endif; ?>
 </div>
 <!-- Horizontal Stepper -->
 <div class="flex items-center justify-between py-stack-md overflow-x-auto no-scrollbar">
@@ -205,6 +225,18 @@
 <h2 class="text-label-caps font-label-caps text-primary uppercase border-b border-outline-variant pb-2">Manuscript Details</h2>
 <div class="space-y-stack-md">
 <div class="flex flex-col gap-1">
+<label class="text-label-caps font-label-caps text-on-surface-variant">Journal</label>
+<select
+class="w-full px-4 py-3 bg-transparent border border-outline-variant rounded-lg font-body-md text-primary"
+name="journal"
+required>
+<option value="">Select a journal</option>
+<?php foreach ($settings["journals"] as $journal_name): ?>
+<option value="<?= e($journal_name) ?>" <?= $selected_journal === $journal_name ? "selected" : "" ?>><?= e($journal_name) ?></option>
+<?php endforeach; ?>
+</select>
+</div>
+<div class="flex flex-col gap-1">
 <label class="text-label-caps font-label-caps text-on-surface-variant">Article Title</label>
 <input
 class="w-full px-4 py-3 bg-transparent border border-outline-variant rounded-lg font-body-md text-primary"
@@ -241,7 +273,7 @@ Manuscript PDF
 <input
 type="file"
 name="article_file"
-accept=".pdf"
+accept=".pdf,.doc,.docx"
 required
 class="w-full px-4 py-3 bg-transparent border border-outline-variant rounded-lg">
 
@@ -253,9 +285,9 @@ class="w-full px-4 py-3 bg-transparent border border-outline-variant rounded-lg"
 <section class="space-y-stack-md bg-surface-container-lowest p-stack-lg border border-outline-variant rounded-lg">
 <div class="flex justify-between items-end border-b border-outline-variant pb-2">
 <h2 class="text-label-caps font-label-caps text-primary uppercase">Author Details</h2>
-<button class="text-label-caps font-label-caps text-secondary hover:text-primary transition-colors flex items-center gap-1">
-<span class="material-symbols-outlined text-[16px]">add</span> ADD CO-AUTHOR
-                        </button>
+<a href="account-settings.php" class="text-label-caps font-label-caps text-secondary hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">edit</span> EDIT PROFILE
+                        </a>
 </div>
 <div class="p-stack-md bg-surface-container-low rounded-lg border border-outline-variant border-dashed">
 <div class="flex items-center gap-stack-sm mb-4">
@@ -264,7 +296,7 @@ class="w-full px-4 py-3 bg-transparent border border-outline-variant rounded-lg"
 <div class="grid grid-cols-1 md:grid-cols-2 gap-stack-md">
 <div class="flex flex-col gap-1">
 <label class="text-label-caps font-label-caps text-on-surface-variant">Full Name</label>
-<input class="w-full px-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-primary" type="text" value="Dr. Elena Mikhailova"/>
+<input class="w-full px-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-primary" type="text" value="<?= e($user["fullname"]) ?>" readonly/>
 </div>
 <div class="flex flex-col gap-1">
 <label class="text-label-caps font-label-caps text-on-surface-variant">Highest Degree</label>
@@ -277,11 +309,11 @@ class="w-full px-4 py-3 bg-transparent border border-outline-variant rounded-lg"
 </div>
 <div class="flex flex-col gap-1">
 <label class="text-label-caps font-label-caps text-on-surface-variant">Institutional Affiliation</label>
-<input class="w-full px-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-primary" placeholder="e.g. Stanford University" type="text"/>
+<input class="w-full px-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-primary" placeholder="e.g. Stanford University" type="text" value="<?= e($user["affiliation"]) ?>" readonly/>
 </div>
 <div class="flex flex-col gap-1">
 <label class="text-label-caps font-label-caps text-on-surface-variant">Email Address</label>
-<input class="w-full px-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-primary" type="email" value="e.mikhailova@university.edu"/>
+<input class="w-full px-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-primary" type="email" value="<?= e($user["email"]) ?>" readonly/>
 </div>
 <div class="md:col-span-2 flex flex-col gap-1">
 <label class="text-label-caps font-label-caps text-on-surface-variant">ORCID iD</label>
@@ -297,13 +329,11 @@ class="w-full px-4 py-3 bg-transparent border border-outline-variant rounded-lg"
 </section>
 <!-- Navigation Controls -->
 <div class="flex justify-between items-center pt-stack-md">
-<button class="px-stack-lg py-3 border border-outline text-primary font-label-caps text-label-caps hover:bg-surface-variant transition-all rounded-lg flex items-center gap-2">
+<a href="dashboard.php" class="px-stack-lg py-3 border border-outline text-primary font-label-caps text-label-caps hover:bg-surface-variant transition-all rounded-lg flex items-center gap-2">
 <span class="material-symbols-outlined text-body-md">arrow_back</span> BACK
-                    </button>
+                    </a>
 <div class="flex gap-4">
-<button class="px-stack-lg py-3 text-secondary font-label-caps text-label-caps hover:underline transition-all">
-                            SAVE DRAFT
-                        </button>
+
 <button
 type="submit"
 class="px-stack-lg py-3 bg-primary text-on-primary font-label-caps text-label-caps hover:opacity-90 transition-all rounded-lg flex items-center gap-2">
@@ -362,7 +392,7 @@ class="px-stack-lg py-3 bg-primary text-on-primary font-label-caps text-label-ca
 <div class="p-stack-lg border border-outline-variant rounded-lg bg-surface-container-lowest flex flex-col items-center text-center space-y-3">
 <span class="material-symbols-outlined text-secondary text-[32px]">support_agent</span>
 <p class="text-body-sm font-body-sm text-on-surface">Need help with your submission?</p>
-<button class="w-full py-2 bg-on-secondary-container text-on-secondary font-label-caps text-label-caps rounded-lg hover:opacity-90">CONTACT EDITORIAL OFFICE</button>
+<a href="about.html" class="block text-center w-full py-2 bg-on-secondary-container text-on-secondary font-label-caps text-label-caps rounded-lg hover:opacity-90">CONTACT EDITORIAL OFFICE</a>
 </div>
 </div>
 </div>

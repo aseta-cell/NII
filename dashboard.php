@@ -1,45 +1,31 @@
 <?php
-session_start();
 require_once "config.php";
 
-
-if (!isset($_SESSION["user_id"])) {
-    header("Location: signin.php");
-    exit();
-}
-
+require_login();
 
 $user_id = $_SESSION["user_id"];
 
-
-
+// Each submission with its latest review
 $stmt = $conn->prepare("
-SELECT 
-submissions.*,
-reviews.status AS review_status,
-reviews.comments AS review_comment
-
+SELECT
+    submissions.*,
+    r.status AS review_status,
+    r.comments AS review_comment
 FROM submissions
-
-LEFT JOIN reviews
-ON submissions.id = reviews.submission_id
-
+LEFT JOIN reviews r
+    ON r.id = (
+        SELECT MAX(id) FROM reviews WHERE reviews.submission_id = submissions.id
+    )
 WHERE submissions.user_id = ?
-
 ORDER BY submissions.created_at DESC
 ");
 
-
 $stmt->bind_param("i", $user_id);
-
 $stmt->execute();
-
 
 $submissions = $stmt->get_result();
 
-
 $total = $submissions->num_rows;
-
 ?>
 <!DOCTYPE html>
 
@@ -178,10 +164,10 @@ $total = $submissions->num_rows;
 <nav class="hidden md:flex items-center gap-stack-lg">
 <a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="about.html">About</a>
 <a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="journals.html">Journals</a>
-<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="publish.html">Publish</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="publish.php">Publish</a>
 <a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="authors.html" >Authors</a>
-<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="reviewers.html">Reviewers</a>
-<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="archive.html">Archive</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="reviewers.php">Reviewers</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="archive.php">Archive</a>
 </nav>
 <div class="flex items-center gap-4 border-l border-outline-variant pl-stack-md">
 <a href="dashboard.php" class="flex items-center gap-stack-sm">
@@ -191,7 +177,7 @@ $total = $submissions->num_rows;
     </span>
 
     <span class="hidden lg:block text-label-caps font-label-caps">
-<?php echo htmlspecialchars($_SESSION["fullname"] ?? $_SESSION["email"] ?? "User"); ?>    </span>
+<?php echo e($_SESSION["fullname"] ?? $_SESSION["email"] ?? "User"); ?>    </span>
 
 </a>
 
@@ -207,7 +193,7 @@ Logout
 <!-- SideNavBar -->
 <aside class="bg-surface-container-low border-r border-outline-variant h-screen w-64 fixed left-0 top-0 pt-24 hidden md:flex flex-col gap-stack-md py-stack-lg">
 <div class="px-6 mb-stack-md">
-<?php echo htmlspecialchars($_SESSION["fullname"] ?? $_SESSION["email"] ?? "User"); ?>
+<?php echo e($_SESSION["fullname"] ?? $_SESSION["email"] ?? "User"); ?>
 <h1 class="text-display-lg-mobile md:text-display-lg font-display-lg text-primary">
 Welcome back,
 </h1></div>
@@ -216,21 +202,22 @@ Welcome back,
 <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
 <span class="text-label-caps font-label-caps">Overview</span>
 </a>
-<a href="dashboard.php" class="flex items-center gap-4 py-3 text-on-secondary-container px-4 hover:bg-surface-variant transition-all duration-150">
+<a href="my-submissions.php" class="flex items-center gap-4 py-3 text-on-secondary-container px-4 hover:bg-surface-variant transition-all duration-150">
 <span class="material-symbols-outlined" data-icon="library_books">library_books</span>
 <span class="text-label-caps font-label-caps">My Submissions</span>
 </a>
-<a href="reviewers.html" class="flex items-center gap-4 py-3 text-on-secondary-container px-4 hover:bg-surface-variant transition-all duration-150">
+<a href="my-submissions.php" class="flex items-center gap-4 py-3 text-on-secondary-container px-4 hover:bg-surface-variant transition-all duration-150">
 <span class="material-symbols-outlined" data-icon="reviews">reviews</span>
 <span class="text-label-caps font-label-caps">Peer Reviews</span>
 </a>
-<a href="payment.php" class="flex items-center gap-4 py-3 text-on-secondary-container px-4 hover:bg-surface-variant transition-all duration-150">
+<a href="billing.php" class="flex items-center gap-4 py-3 text-on-secondary-container px-4 hover:bg-surface-variant transition-all duration-150">
 <span class="material-symbols-outlined" data-icon="payments">payments</span>
 <span class="text-label-caps font-label-caps">Billing</span>
 </a>
-<a href="account-settings.php class="flex items-center gap-4 py-3 text-on-secondary-container px-4 hover:bg-surface-variant transition-all duration-150">
+<a href="account-settings.php" class="flex items-center gap-4 py-3 text-on-secondary-container px-4 hover:bg-surface-variant transition-all duration-150">
 <span class="material-symbols-outlined" data-icon="settings">settings</span>
 <span class="text-label-caps font-label-caps">Account Settings</span>
+</a>
 </nav>
 </aside>
 
@@ -243,7 +230,7 @@ Welcome back,
 
 <h1 class="text-display-lg-mobile md:text-display-lg font-display-lg text-primary">
     Welcome back,
-    <?php echo htmlspecialchars($_SESSION["fullname"] ?? $_SESSION["email"] ?? "Researcher"); ?>
+    <?php echo e($_SESSION["fullname"] ?? $_SESSION["email"] ?? "Researcher"); ?>
 </h1>
 
 <p class="text-body-md font-body-md text-on-surface-variant max-w-xl">
@@ -256,7 +243,7 @@ Welcome back,
                         Download Certificate
                     </button>
 <a
-href="submit-article.php"
+href="publish.php"
 class="px-6 py-2 bg-primary text-on-primary text-label-caps font-label-caps rounded hover:opacity-90 transition-all inline-block">
 Submit New Article
 </a>
@@ -279,6 +266,12 @@ Active Records
 </span>
 </div>
 <!-- Submission Card 1: Revision Required -->
+<?php if (isset($_GET["submitted"])): ?>
+<div class="p-4 mb-4 rounded bg-green-100 text-green-800">
+    Your manuscript was submitted. The editorial office will assign a reviewer.
+</div>
+<?php endif; ?>
+
 <?php if ($total == 0): ?>
 
 <div class="paper-card p-6 rounded-lg">
@@ -290,7 +283,7 @@ Active Records
         You haven't submitted any manuscripts.
     </p>
 
-    <a href="submit-article.php"
+    <a href="publish.php"
        class="inline-block mt-4 px-5 py-2 bg-primary text-white rounded">
         Submit your first article
     </a>
@@ -306,10 +299,10 @@ Active Records
 
 <?php
 
-$status = $row["review_status"] ?? "Under Review";
+$status = $row["status"];
 $color = "bg-secondary-container";
 
-if ($status == "Accepted") {
+if ($status == "Accepted" || $status == "Paid") {
     $color = "bg-green-200";
 }
 
@@ -317,7 +310,7 @@ elseif ($status == "Under Review") {
     $color = "bg-yellow-200";
 }
 
-elseif ($status == "Rejected") {
+elseif ($status == "Rejected" || $status == "Revision") {
     $color = "bg-red-200";
 }
 
@@ -328,7 +321,7 @@ elseif ($status == "Published") {
 ?>
 
 <span class="px-3 py-1 rounded-full <?= $color ?>">
-    <?= htmlspecialchars($status) ?>
+    <?= e($status) ?>
 </span>
 
 <span>
@@ -341,24 +334,44 @@ elseif ($status == "Published") {
 
 <h3 class="text-headline-md mt-4">
 
-<?= htmlspecialchars($row["title"]) ?>
+<?= e($row["title"]) ?>
 
 </h3>
 
 <p class="mt-2 text-on-surface-variant">
 
-<?= htmlspecialchars($row["journal"]) ?>
+<?= e($row["journal"]) ?>
 
 </p>
 
+<?php if (!empty($row["filename"])): ?>
 <a
-href="uploads/<?= urlencode($row["filename"]) ?>"
+href="<?= e(upload_url($row["filename"])) ?>"
 target="_blank"
 class="text-primary mt-4 inline-block">
 
-View PDF
+View Manuscript
 
 </a>
+<?php endif; ?>
+
+<?php if ($status == "Accepted" || $status == "Payment Pending"): ?>
+<a
+href="payment.php?id=<?= (int)$row["id"] ?>"
+class="inline-block mt-4 ml-4 px-5 py-2 bg-primary text-white rounded">
+
+Pay publication fee
+
+</a>
+<?php elseif ($status == "Published"): ?>
+<a
+href="article.php?id=<?= (int)$row["id"] ?>"
+class="inline-block mt-4 ml-4 text-primary font-bold">
+
+Open published article →
+
+</a>
+<?php endif; ?>
 <?php if(!empty($row["review_comment"])): ?>
 
 <div class="mt-4 p-4 bg-surface-container rounded">
@@ -368,7 +381,7 @@ Reviewer Comment:
 </p>
 
 <p>
-<?= htmlspecialchars($row["review_comment"]) ?>
+<?= e($row["review_comment"]) ?>
 </p>
 
 </div>
